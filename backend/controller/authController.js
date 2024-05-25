@@ -81,3 +81,65 @@ export const adminregisterController = async (req,res,next) =>{
             token
         })
 } 
+
+export const emploginController = async(req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Provide All Fields' });
+    }
+
+    const emp = await employee.findOne({ email }).select("+password");
+    if (!emp) {
+      return res.status(401).json({ message: 'Invalid Email or Password' });
+    }
+
+    const isMatch = await emp.comparePassword(password); // Ensure password is a string
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid Credentials' });
+    }
+    emp.password = undefined;
+
+    const token = emp.createJWT();
+    res.status(200).json({
+      success: true,
+      message: "Login Successfully",
+      user: emp, // Fix the response to return the user
+      token
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const admloginController = async(req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Provide All Fields' });
+    }
+
+    const adm = await admin.findOne({ email }).select("+password");
+    if (!adm) {
+      return res.status(401).json({ message: 'Invalid Email or Password' });
+    }
+
+    const isMatch = await adm.comparePassword(password); // Ensure password is a string
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid Credentials' });
+    }
+    adm.password = undefined;
+
+    const token = adm.createJWT();
+    res.status(200).json({
+      success: true,
+      message: "Login as Admin Successfully",
+      user: adm, // Fix the response to return the user
+      token
+    });
+  } catch (error) {
+    next(error);
+  }
+};

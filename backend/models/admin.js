@@ -90,5 +90,10 @@ adminSchema.methods.createJWT = function() {
   return JWT.sign({ adminId: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 }
 
+adminSchema.methods.comparePassword = async function (admPassword){
+  const isMatch = await bcrypt.compare(admPassword, this.password)
+  return isMatch;
+}
+
 
 export default mongoose.model('Admin', adminSchema);

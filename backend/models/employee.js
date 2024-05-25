@@ -15,7 +15,8 @@ const employeeSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    select: false // Ensure password is not selected by default
   },
   reimbursements: [
     {
@@ -43,9 +44,13 @@ const employeeSchema = new mongoose.Schema({
   }
 });
 
-employeeSchema.pre("save", async function() {
+// Hash password before saving
+employeeSchema.pre("save", async function(next) {
+  if (!this.isModified('password')) return next();
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 employeeSchema.methods.createJWT = function() {
@@ -53,6 +58,11 @@ employeeSchema.methods.createJWT = function() {
     console.error("JWT_SECRET is not defined");
   }
   return JWT.sign({ userId: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+}
+
+// Password compare method
+employeeSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 }
 
 export default mongoose.model('Employee', employeeSchema);
