@@ -3,7 +3,7 @@ import admin from '../models/admin.js'
 
 
 export const empregisterController = async (req, res, next) => {
-    const { fullname, email, password, usertype } = req.body;
+    const { fullname, email, password, usertype,position } = req.body;
   
     if (!fullname) {
       return res.status(400).send({ success: false, message: 'Please provide fullname' });
@@ -13,6 +13,9 @@ export const empregisterController = async (req, res, next) => {
     }
     if (!password) {
       return res.status(400).send({ success: false, message: 'Please provide password' });
+    }
+    if (!position) {
+      return res.status(400).send({ success: false, message: 'Please provide position' });
     }
     if (!usertype) {
       return res.status(400).send({ success: false, message: 'Please provide usertype' });
@@ -24,7 +27,7 @@ export const empregisterController = async (req, res, next) => {
         return res.status(400).send({ success: false, message: 'Email is already registered' });
       }
   
-      const emp = await employee.create({ fullname, email, password, usertype });
+      const emp = await employee.create({ fullname, email, password, usertype, position });
       const token = emp.createJWT();
       if (!token) {
         console.error("Token generation failed");
@@ -44,7 +47,7 @@ export const empregisterController = async (req, res, next) => {
 
 export const adminregisterController = async (req,res,next) =>{
 
-        const {fullname,email,password,usertype,passkey} = req.body
+        const {fullname,email,password,usertype,passkey, position} = req.body
 
         if(!fullname){
             next('Provide Fullname')
@@ -58,6 +61,9 @@ export const adminregisterController = async (req,res,next) =>{
         if(!usertype){
             next('Provide UserType')
         }
+        if(!position){
+          next('Provide Position')
+      }
         if (!passkey || passkey !== 'adminkey') {
             next('Ivalid Passkey')
         }
@@ -68,7 +74,7 @@ export const adminregisterController = async (req,res,next) =>{
             next('Email is Already Registered')
         }
 
-        const adm = await admin.create({fullname,email,password,usertype,passkey})
+        const adm = await admin.create({fullname,email,password,usertype,passkey,position})
         const token = adm.createJWT();
         if (!token) {
           console.error("Token generation failed");
