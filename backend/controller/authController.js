@@ -18,6 +18,7 @@ export const empregisterController = async (req, res, next) => {
       return res.status(400).send({ success: false, message: 'Please provide position' });
     }
     if (!usertype) {
+      
       return res.status(400).send({ success: false, message: 'Please provide usertype' });
     }
   
