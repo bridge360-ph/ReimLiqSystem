@@ -31,7 +31,8 @@ const employeeSchema = new mongoose.Schema({
     }
   ],
   image: {
-    type: String
+    type: String,
+    default:"none"
   },
   position: {
     type: String
@@ -57,8 +58,9 @@ employeeSchema.methods.createJWT = function() {
   if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
   }
-  return JWT.sign({ userId: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-}
+  return JWT.sign({ userId: this._id, userType: 'employee' }, process.env.JWT_SECRET, { expiresIn: '1d' });
+};
+
 
 // Password compare method
 employeeSchema.methods.comparePassword = async function(candidatePassword) {

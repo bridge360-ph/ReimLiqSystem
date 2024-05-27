@@ -73,3 +73,33 @@ export const updateAdminController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserByIdController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userType = req.user.userType === 'admin' ? 'Admin' : 'Employee'; // Get usertype from req.user
+
+    let user;
+
+    if (userType === 'Admin') {
+      user = await admin.findById(id);
+    } else if (userType === 'Employee') {
+      user = await employee.findById(id);
+    } else {
+      return res.status(400).json({ message: 'Invalid usertype provided' });
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: `${userType.charAt(0).toUpperCase() + userType.slice(1)} not found` });
+    }
+
+    res.status(200).json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+

@@ -67,6 +67,10 @@ const adminSchema = new mongoose.Schema({
       ref: 'Reimbursement'
     }
   ],
+  image: {
+    type: String,
+    default:"none"
+  },
   usertype: {
     type: String,
     enum: ['admin'],
@@ -83,12 +87,13 @@ adminSchema.pre("save", async function(){
   this.password= await bcrypt.hash(this.password, salt)
 })
 
+// In your Admin model
 adminSchema.methods.createJWT = function() {
   if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
   }
-  return JWT.sign({ adminId: this._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-}
+  return JWT.sign({ userId: this._id, usertype: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1d' });
+};
 
 adminSchema.methods.comparePassword = async function (admPassword){
   const isMatch = await bcrypt.compare(admPassword, this.password)
