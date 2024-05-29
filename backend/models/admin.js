@@ -37,31 +37,13 @@ const adminSchema = new mongoose.Schema({
       ref: 'Reimbursement'
     }
   ],
-  rejected_reim: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Reimbursement'
-    }
-  ],
   approved_liq: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Liquidation'
     }
   ],
-  rejected_liq: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Liquidation'
-    }
-  ],
   paid_reim: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Reimbursement'
-    }
-  ],
-  unpaid_reim: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Reimbursement'

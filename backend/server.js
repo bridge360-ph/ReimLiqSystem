@@ -7,6 +7,7 @@ import cors from 'cors'
 import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import liqRoutes from './routes/liqroutes.js'
 import reimRoutes from './routes/reimRoutes.js'
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import "express-async-errors"
@@ -24,7 +25,7 @@ app.use('/api/v1/test', testRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/reim', reimRoutes)
-
+app.use('/api/v1/liq', liqRoutes)
 //validation middleware
 app.use(errorMiddleware)
 

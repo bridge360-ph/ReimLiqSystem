@@ -30,8 +30,6 @@ export const createReimbursementController = async (req, res, next) => {
     // Save the reimbursement to the database
     await newReimbursement.save();
 
-    // Log the new reimbursement for debugging
-    console.log('New Reimbursement:', newReimbursement);
 
     // Add the reimbursement ID to the reimbursements array of the creator
     if (created_by_model === 'Employee') {
@@ -303,6 +301,112 @@ export const delReimItem = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Reimbursement item deleted and total price recalculated successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+//GETTING ALL ITEMS OF REIMBURSEMENT
+export const getAllItems = async (req, res, next) => {
+  try {
+    const { reimbursement_id } = req.body;
+
+    // Validate the reimbursement_id
+    if (!reimbursement_id) {
+      return res.status(400).json({ message: 'Reimbursement ID is required' });
+    }
+
+    // Check if the reimbursement exists
+    const reimbursement = await Reimbursement.findById(reimbursement_id);
+    if (!reimbursement) {
+      return res.status(404).json({ message: 'Reimbursement not found' });
+    }
+
+    // Find all items related to the reimbursement_id
+    const items = await reim_items.find({ reimbursement_id });
+
+    res.status(200).json({
+      success: true,
+      items,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+//GET ALL REIMBURSEMENT
+export const getAllReim = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+
+    // Retrieve all reimbursements from the database
+    const allReimbursements = await Reimbursement.find();
+
+    // Filter out reimbursements where created_by matches the userId
+    const filteredReimbursements = allReimbursements.filter(
+      reimbursement => reimbursement.created_by.toString() !== userId
+    );
+
+    res.status(200).json({
+      success: true,
+      reimbursements: filteredReimbursements,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getCreatedReim = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+
+    // Retrieve reimbursements created by the user from the database
+    const createdReimbursements = await Reimbursement.find({ created_by: userId });
+
+    res.status(200).json({
+      success: true,
+      reimbursements: createdReimbursements,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getFilteredReim = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const { userId } = req.user;
+
+    // Define valid status and paystatus values
+    const validStatus = ['pending', 'approved', 'rejected'];
+    const validPayStatus = ['unpaid', 'paid'];
+
+    // Validate the status parameter
+    if (!validStatus.includes(status) && !validPayStatus.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status provided' });
+    }
+
+    let filterCriteria = { created_by: userId };
+
+    // Add the appropriate filter based on the provided status
+    if (validStatus.includes(status)) {
+      filterCriteria.status = status;
+    } else if (validPayStatus.includes(status)) {
+      filterCriteria.paystatus = status;
+    }
+
+    // Retrieve reimbursements based on the filter criteria
+    const reimbursements = await Reimbursement.find(filterCriteria);
+
+    res.status(200).json({
+      success: true,
+      reimbursements,
     });
   } catch (error) {
     next(error);

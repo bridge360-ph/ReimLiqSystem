@@ -1,6 +1,6 @@
 import express from 'express'
 import userAuth from '../middlewares/authMiddleware.js'
-import { createReimItemController, createReimbursementController, delReimItem, deleteReimbursementController, getReimItem, getReimbursementByIdController, updateReimController, updateReimItem } from '../controller/reimController.js'
+import { createReimItemController, createReimbursementController, delReimItem, deleteReimbursementController, getAllItems, getAllReim, getCreatedReim, getFilteredReim, getReimItem, getReimbursementByIdController, updateReimController, updateReimItem } from '../controller/reimController.js'
 
 const router = express.Router()
 
@@ -16,5 +16,15 @@ router.get('/get-reim-item/:id', userAuth, getReimItem)
 router.put('/update-reim-item/:id', userAuth, updateReimItem )
 router.delete('/del-reim-item/:id', userAuth, delReimItem )
 
+
+//OTHER ROUTES
+
+router.get('/get-reim-items', userAuth, getAllItems )
+
+router.get('/get-all-reim', userAuth, getAllReim)
+
+router.get('/get-created-reim',userAuth, getCreatedReim)
+
+router.get('/filtered-reim', userAuth, getFilteredReim )
 
 export default router
