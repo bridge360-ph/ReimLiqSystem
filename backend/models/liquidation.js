@@ -36,6 +36,11 @@ const liquidationSchema = new mongoose.Schema({
     enum: ['approved', 'rejected', 'pending'],
     default: 'pending'
   },
+  paystatus: {
+    type: String,
+    enum: ['returned', 'unreturned'],
+    default: 'unreturned'
+  },
   submission_date: {
     type: Date,
     default: Date.now
@@ -48,7 +53,7 @@ const liquidationSchema = new mongoose.Schema({
   },
   total_price: {
     type: Number,
-    default:0
+    default: 0
   },
   initial_amount: {
     type: Number,
@@ -56,23 +61,23 @@ const liquidationSchema = new mongoose.Schema({
   },
   remaining_amount: {
     type: Number,
-    default: function() {
+    default: function () {
       return this.initial_amount - this.total_price;
     }
   }
 });
 
-liquidationSchema.methods.calculateTotalPrice = async function(){
-  const liqItems = await liq_items.find({liquidation_id: this._id})
-  this.total_price = liqItems.reduce((sum,item)=>sum+item.total_price,0)
+liquidationSchema.methods.calculateTotalPrice = async function () {
+  const liqItems = await liq_items.find({ liquidation_id: this._id })
+  this.total_price = liqItems.reduce((sum, item) => sum + item.total_price, 0)
   return this.total_price
 }
 
 // Pre-save hook to calculate remaining amount
-liquidationSchema.pre('save',  async function(next) {
+liquidationSchema.pre('save', async function (next) {
   await this.calculateTotalPrice()
   this.remaining_amount = this.initial_amount - this.total_price;
- 
+
   next();
 });
 

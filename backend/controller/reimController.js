@@ -1,5 +1,5 @@
 import Reimbursement from '../models/reimbursement.js'; // Ensure correct import
-import reim_items  from '../models/reim_items.js';
+import reim_items from '../models/reim_items.js';
 import employee from '../models/employee.js';
 import admin from '../models/admin.js';
 import reimbursement from '../models/reimbursement.js';
@@ -56,7 +56,7 @@ export const createReimbursementController = async (req, res, next) => {
 
 export const updateReimController = async (req, res, next) => {
   try {
-  
+
 
     const { id } = req.params;
     const { name, description } = req.body;
@@ -165,63 +165,63 @@ export const deleteReimbursementController = async (req, res, next) => {
 //CREATE ITEM
 
 export const createReimItemController = async (req, res, next) => {
-    try {
-      const { reimbursement_id, item, quantity, price } = req.body;
-  
-      // Validate required fields
-      if (!reimbursement_id || !item || !quantity || !price) {
-        return res.status(400).json({ message: 'All fields are required' });
-      }
-  
-      // Check if the reimbursement exists
-      const reimbursement = await Reimbursement.findById(reimbursement_id);
-      if (!reimbursement) {
-        return res.status(404).json({ message: 'Reimbursement not found' });
-      }
-  
-      // Create the new reimItem
-      const newReimItem = new reim_items({
-        reimbursement_id,
-        item,
-        quantity,
-        price
-      });
-  
-      // Save the reimItem to the database
-      await newReimItem.save();
-  
-      // Add the reimItem ID to the reim_items array of the corresponding reimbursement
-      reimbursement.reim_items.push(newReimItem._id);
-  
-      // Recalculate the total price for the reimbursement
-      await reimbursement.calculateTotalPrice();
-      
-      // Save the updated reimbursement
-      await reimbursement.save();
-  
-      res.status(201).json({
-        success: true,
-        message: 'Reimbursement Item created successfully',
-        reimItem: newReimItem
-      });
-    } catch (error) {
-      next(error);
+  try {
+    const { reimbursement_id, item, quantity, price } = req.body;
+
+    // Validate required fields
+    if (!reimbursement_id || !item || !quantity || !price) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
-  };
+
+    // Check if the reimbursement exists
+    const reimbursement = await Reimbursement.findById(reimbursement_id);
+    if (!reimbursement) {
+      return res.status(404).json({ message: 'Reimbursement not found' });
+    }
+
+    // Create the new reimItem
+    const newReimItem = new reim_items({
+      reimbursement_id,
+      item,
+      quantity,
+      price
+    });
+
+    // Save the reimItem to the database
+    await newReimItem.save();
+
+    // Add the reimItem ID to the reim_items array of the corresponding reimbursement
+    reimbursement.reim_items.push(newReimItem._id);
+
+    // Recalculate the total price for the reimbursement
+    await reimbursement.calculateTotalPrice();
+
+    // Save the updated reimbursement
+    await reimbursement.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Reimbursement Item created successfully',
+      reimItem: newReimItem
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
-export const getReimItem = async (req,res,next)=>{
+export const getReimItem = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const reim_item = await reim_items.findById(id)
 
-    if(!reim_item){
-      return res.status(404).json({message:'Item Not Found'})
+    if (!reim_item) {
+      return res.status(404).json({ message: 'Item Not Found' })
     }
 
     res.status(200).json({
-      success:true,
+      success: true,
       reim_item
     })
 
@@ -230,42 +230,42 @@ export const getReimItem = async (req,res,next)=>{
   }
 }
 
-export const updateReimItem = async (req,res,next) =>{
+export const updateReimItem = async (req, res, next) => {
   try {
 
     const { id } = req.params;
-    const {item, quantity, price} = req.body;
+    const { item, quantity, price } = req.body;
 
-    
+
     if (!item || !quantity || !price) {
       return res.status(400).json({ message: 'Credentials Missing' });
     }
 
     const reim_item = await reim_items.findById(id)
 
-    if(!reim_item){
-      return res.status(404).json({message:'Item Not Found'})
+    if (!reim_item) {
+      return res.status(404).json({ message: 'Item Not Found' })
     }
 
-    if(item){
-      reim_item.item=item
+    if (item) {
+      reim_item.item = item
     }
-    if(quantity){
-      reim_item.quantity=quantity
+    if (quantity) {
+      reim_item.quantity = quantity
     }
-    if(price){
-      reim_item.price=price
+    if (price) {
+      reim_item.price = price
     }
-    
+
     await reim_item.save()
-    
+
     const reimbursement = await Reimbursement.findById(reim_item.reimbursement_id)
     await reimbursement.calculateTotalPrice();
     await reimbursement.save();
     res.status(200).json({
-      success:true,
-      message:"Item Updated",
-      item:reim_item
+      success: true,
+      message: "Item Updated",
+      item: reim_item
     })
 
   } catch (error) {
@@ -287,7 +287,7 @@ export const delReimItem = async (req, res, next) => {
     // Remove the reimbursement item ID from the corresponding reimbursement's array
     const reimbursementId = deleteReimItem.reimbursement_id;
     const reimbursement = await Reimbursement.findByIdAndUpdate(reimbursementId, {
-      $pull: { reimbursements: id }
+      $pull: { reim_items: id }
     });
 
     if (!reimbursement) {
