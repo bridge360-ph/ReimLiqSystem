@@ -388,3 +388,39 @@ export const getFilteredLiq = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const getFilteredLiq2 = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const { userId } = req.user;
+
+    // Define valid status and paystatus values
+    const validStatus = ['pending', 'approved', 'rejected'];
+    const validPayStatus = ['unreturned', 'returned'];
+
+    // Validate the status parameter
+    if (!validStatus.includes(status) && !validPayStatus.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status provided' });
+    }
+
+    let filterCriteria = { created_by: { $ne: userId } };
+
+    // Add the appropriate filter based on the provided status
+    if (validStatus.includes(status)) {
+      filterCriteria.status = status;
+    } else if (validPayStatus.includes(status)) {
+      filterCriteria.paystatus = status;
+    }
+
+    // Retrieve reimbursements based on the filter criteria
+    const liq = await liquidation.find(filterCriteria);
+
+    res.status(200).json({
+      success: true,
+      liq,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
