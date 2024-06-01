@@ -1,20 +1,44 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import InputForm from '../components/shared/InputForm';
+import axios from 'axios';
+import { toast } from 'react-toastify'
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [usertype, setUserType] = useState("employee"); // Default to 'employee'
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
-        const loginData = {
-            email,
-            password,
-            usertype
-        };
-        // Add your login logic here, for example, making an API call
-        console.log("Logging in as:", loginData);
+    const handleLogin = async () => {
+        try {
+            const loginData = {
+                email,
+                password,
+            };
+
+            const url = usertype === "employee"
+                ? "/api/v1/auth/emplogin"
+                : "/api/v1/auth/admlogin";
+
+            const { data } = await axios.post(url, loginData);
+            console.log("API response data:", data);
+
+            if (data.success) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('usertype', usertype);
+                localStorage.setItem('userId', data.user._id);
+
+                const redirectPath = usertype === "employee" ? "/empdash" : "/admdash";
+                toast.success("Login successful")
+                navigate(redirectPath);
+            } else {
+                alert('Login failed. Please check your credentials and try again.');
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert('An error occurred during login. Please try again.');
+        }
     };
 
     return (
