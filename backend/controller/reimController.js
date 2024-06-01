@@ -137,9 +137,33 @@ export const deleteReimbursementController = async (req, res, next) => {
     const userType = req.user.userType === 'admin' ? 'Admin' : 'Employee';
 
     if (userType === 'Admin') {
-      await admin.findByIdAndUpdate(userId, {
-        $pull: { reimbursements: id }
+      const adminUser = await admin.findById(userId);
+
+      if (!adminUser) {
+        return res.status(404).json({ message: 'Admin not found' });
+      }
+
+      // Check and remove the reimbursement ID from the admin's specific arrays
+      const arraysToCheck = [
+        'approved_reim',
+        'rejected_reim',
+        'paid_reim',
+        'unpaid_reim',
+        'approved_liq',
+        'rejected_liq',
+        'unreturned_liq',
+        'returned_liq'
+      ];
+
+      let updateOperations = { $pull: { reimbursements: id } };
+
+      arraysToCheck.forEach(arrayName => {
+        if (adminUser[arrayName].includes(id)) {
+          updateOperations.$pull[arrayName] = id;
+        }
       });
+
+      await admin.findByIdAndUpdate(userId, updateOperations);
     } else if (userType === 'Employee') {
       await employee.findByIdAndUpdate(userId, {
         $pull: { reimbursements: id }

@@ -48,6 +48,9 @@ const reimbursementSchema = new mongoose.Schema({
   approval_date: {
     type: Date
   },
+  payment_date: {
+    type: Date
+  },
   comments: {
     type: String
   },
@@ -57,14 +60,14 @@ const reimbursementSchema = new mongoose.Schema({
   }
 });
 
-reimbursementSchema.methods.calculateTotalPrice = async function() {
+reimbursementSchema.methods.calculateTotalPrice = async function () {
   const reimItems = await reim_items.find({ reimbursement_id: this._id });
   this.total_price = reimItems.reduce((sum, item) => sum + item.total_price, 0);
   return this.total_price;
 };
 
 // Pre-save hook to calculate total_price
-reimbursementSchema.pre('save', async function(next) {
+reimbursementSchema.pre('save', async function (next) {
   await this.calculateTotalPrice();
   next();
 });

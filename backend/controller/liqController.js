@@ -127,10 +127,32 @@ export const deleteLiq = async (req, res, next) => {
     const userId = req.user.userId;
     const userType = req.user.userType === 'admin' ? 'Admin' : 'Employee';
 
+    let updateOperations = {
+      $pull: { liquidations: id }
+    };
+
     if (userType === 'Admin') {
-      await admin.findByIdAndUpdate(userId, {
-        $pull: { liquidations: id }
+      const adminUser = await admin.findById(userId);
+
+      // Check and remove the liquidation ID from the admin's specific arrays
+      const arraysToCheck = [
+        'approved_reim',
+        'rejected_reim',
+        'paid_reim',
+        'unpaid_reim',
+        'approved_liq',
+        'rejected_liq',
+        'unreturned_liq',
+        'returned_liq'
+      ];
+
+      arraysToCheck.forEach(arrayName => {
+        if (adminUser[arrayName].includes(id)) {
+          updateOperations.$pull[arrayName] = id;
+        }
       });
+
+      await admin.findByIdAndUpdate(userId, updateOperations);
     } else if (userType === 'Employee') {
       await employee.findByIdAndUpdate(userId, {
         $pull: { liquidations: id }

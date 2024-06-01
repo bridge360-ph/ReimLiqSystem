@@ -33,7 +33,7 @@ const liquidationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['approved', 'rejected', 'pending'],
+    enum: ['accepted', 'rejected', 'pending'],
     default: 'pending'
   },
   paystatus: {
@@ -46,6 +46,9 @@ const liquidationSchema = new mongoose.Schema({
     default: Date.now
   },
   approval_date: {
+    type: Date
+  },
+  payment_date: {
     type: Date
   },
   comments: {

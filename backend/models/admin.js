@@ -37,7 +37,19 @@ const adminSchema = new mongoose.Schema({
       ref: 'Reimbursement'
     }
   ],
+  rejected_reim: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Reimbursement'
+    }
+  ],
   approved_liq: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Liquidation'
+    }
+  ],
+  rejected_liq: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Liquidation'
@@ -49,9 +61,27 @@ const adminSchema = new mongoose.Schema({
       ref: 'Reimbursement'
     }
   ],
+  unpaid_reim: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Reimbursement'
+    }
+  ],
+  returned_liq: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Reimbursement'
+    }
+  ],
+  unreturned_liq: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Reimbursement'
+    }
+  ],
   image: {
     type: String,
-    default:"none"
+    default: "none"
   },
   usertype: {
     type: String,
@@ -64,20 +94,20 @@ const adminSchema = new mongoose.Schema({
   }
 });
 
-adminSchema.pre("save", async function(){
+adminSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(10);
-  this.password= await bcrypt.hash(this.password, salt)
+  this.password = await bcrypt.hash(this.password, salt)
 })
 
 // In your Admin model
-adminSchema.methods.createJWT = function() {
+adminSchema.methods.createJWT = function () {
   if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
   }
   return JWT.sign({ userId: this._id, usertype: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
-adminSchema.methods.comparePassword = async function (admPassword){
+adminSchema.methods.comparePassword = async function (admPassword) {
   const isMatch = await bcrypt.compare(admPassword, this.password)
   return isMatch;
 }
