@@ -103,3 +103,46 @@ export const getUserByIdController = async (req, res, next) => {
 };
 
 
+export const postUserController = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const userType = req.user.userType === 'admin' ? 'Admin' : 'Employee';
+    console.log(userType)
+    let user;
+
+    if (userType === 'Admin') {
+      user = await admin.findById(userId);
+    } else if (userType === 'Employee') {
+      user = await employee.findById(userId);
+    } else {
+      return res.status(400).send({
+        message: "Invalid usertype",
+        success: false,
+      });
+    }
+
+    if (!user) {
+      return res.status(200).send({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    user.password = undefined; // Remove password for security
+
+    res.status(200).send({
+      success: true,
+      data: user,
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Auth Error",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+
