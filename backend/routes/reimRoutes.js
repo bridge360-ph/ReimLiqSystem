@@ -19,7 +19,8 @@ router.delete('/del-reim-item/:id', userAuth, delReimItem)
 
 //OTHER ROUTES
 
-router.get('/get-reim-items', userAuth, getAllItems)
+router.get('/get-reim-items/:reimbursementId', userAuth, getAllItems);
+
 
 router.get('/get-all-reim', userAuth, getAllReim)
 

@@ -2,36 +2,29 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import InputForm from '../components/shared/InputForm';
 import axios from 'axios';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 
-const LoginPage = () => {
+const LoginPage = ({ setUsertype }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [usertype, setUserType] = useState("employee"); // Default to 'employee'
+    const [usertype, setUserType] = useState("employee");
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            const loginData = {
-                email,
-                password,
-            };
-
-            const url = usertype === "employee"
-                ? "/api/v1/auth/emplogin"
-                : "/api/v1/auth/admlogin";
-
+            const loginData = { email, password };
+            const url = usertype === "employee" ? "/api/v1/auth/emplogin" : "/api/v1/auth/admlogin";
             const { data } = await axios.post(url, loginData);
-            console.log("API response data:", data);
 
             if (data.success) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('usertype', usertype);
                 localStorage.setItem('userId', data.user._id);
+                setUsertype(usertype); // Update the usertype in App component
 
                 const redirectPath = usertype === "employee" ? "/empdash" : "/admdash";
-                toast.success("Login successful")
                 navigate(redirectPath);
+                toast.success("Login successful");
             } else {
                 alert('Login failed. Please check your credentials and try again.');
             }

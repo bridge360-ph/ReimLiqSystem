@@ -336,21 +336,21 @@ export const delReimItem = async (req, res, next) => {
 //GETTING ALL ITEMS OF REIMBURSEMENT
 export const getAllItems = async (req, res, next) => {
   try {
-    const { reimbursement_id } = req.body;
+    const { reimbursementId } = req.params;
 
-    // Validate the reimbursement_id
-    if (!reimbursement_id) {
+    // Validate the reimbursementId
+    if (!reimbursementId) {
       return res.status(400).json({ message: 'Reimbursement ID is required' });
     }
 
     // Check if the reimbursement exists
-    const reimbursement = await Reimbursement.findById(reimbursement_id);
+    const reimbursement = await Reimbursement.findById(reimbursementId);
     if (!reimbursement) {
       return res.status(404).json({ message: 'Reimbursement not found' });
     }
 
-    // Find all items related to the reimbursement_id
-    const items = await reim_items.find({ reimbursement_id });
+    // Find all items related to the reimbursementId
+    const items = await reim_items.find({ reimbursement_id: reimbursementId });
 
     res.status(200).json({
       success: true,
