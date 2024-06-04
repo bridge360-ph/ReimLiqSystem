@@ -314,18 +314,18 @@ export const delLiqItem = async (req, res, next) => {
 
 export const getAllLiqItems = async (req, res, next) => {
   try {
-    const { liquidation_id } = req.body
-    if (!liquidation_id) {
+    const { liquidationId } = req.params
+    if (!liquidationId) {
       return res.status(400).json({ message: 'Liquidation ID is required' });
     }
 
-    const liq = await liquidation.findById(liquidation_id)
+    const liq = await liquidation.findById(liquidationId)
 
     if (!liq) {
       return res.status(404).json({ message: 'Liquidation not found' });
     }
 
-    const items = await liq_items.find({ liquidation_id })
+    const items = await liq_items.find({ liquidation_id: liquidationId })
 
     res.status(200).json({
       success: true,

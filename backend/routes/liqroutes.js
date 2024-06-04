@@ -18,7 +18,7 @@ router.get('/get-liq-item/:id', userAuth, getLiqItem)
 router.delete('/del-liq-item/:id', userAuth, delLiqItem)
 
 
-router.get("/get-all-items", userAuth, getAllLiqItems)
+router.get("/get-all-items/:liquidationId", userAuth, getAllLiqItems)
 router.get("/get-all-liq", userAuth, getAllLiq)
 router.get("/get-created-liq", userAuth, getCreatedLiq)
 router.get("/get-filtered-liq", userAuth, getFilteredLiq)
