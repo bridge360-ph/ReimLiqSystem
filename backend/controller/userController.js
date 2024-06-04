@@ -1,4 +1,5 @@
-import employee from '../models/employee.js'; // Ensure correct import
+import employee from '../models/employee.js';
+import bcrypt from 'bcryptjs'// Ensure correct import
 
 export const updateEmpController = async (req, res, next) => {
   try {

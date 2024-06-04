@@ -10,7 +10,7 @@ const Reimbursements = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
-    const [isUpdateItemModalOpen, setIsUpdateItemModalOpen] = useState(false); // State for UpdateReimItem modal
+    const [isUpdateItemModalOpen, setIsUpdateItemModalOpen] = useState(false);
     const [selectedReimbursement, setSelectedReimbursement] = useState(null);
     const [reimbursements, setReimbursements] = useState([]);
     const [error, setError] = useState(null);
@@ -52,9 +52,6 @@ const Reimbursements = () => {
     const closeUpdateItemModal = () => {
         setIsUpdateItemModalOpen(false); // Close the UpdateReimItem modal
     };
-
-    // Add handleUpdateItem function to open the UpdateReimItem modal
-
 
 
     const closeAddItemModal = () => {

@@ -48,12 +48,26 @@
   gap: 5px;
 }
 
-.menu-item a {
+.menu-item a,
+.userprof {
   text-decoration: none;
   font-family: "Inter", sans-serif;
   color: white;
   font-weight: 300;
   font-size: .8em;
+}
+
+.userprof {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  border-top: 1px solid white;
+  padding: .3em;
+  margin-top: 8em;
+}
+
+.username {
+  font-weight: 400;
 }
 
 .menu-item svg {

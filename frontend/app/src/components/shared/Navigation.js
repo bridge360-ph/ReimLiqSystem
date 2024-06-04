@@ -1,17 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import ManageReim from '../../pages/ManageReim';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+
 
 const Navigation = () => {
     const navigate = useNavigate();
+    const [userData, setUserData] = useState({ fullname: '', email: '' })
+
     const handleLogout = () => {
         navigate('/login');
         localStorage.clear();
         window.location.reload()
     };
+
     const usertype = localStorage.getItem('usertype');
+    const userId = localStorage.getItem('userId');
+    useEffect(() => {
+        if (usertype && userId) {
+            const fetchUserData = async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await axios.get(`/api/v1/user/get-user/${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.data.success) {
+                        setUserData(response.data.user);
+                    } else {
+                        toast.error('Failed to fetch user data');
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    toast.error('Error fetching user data');
+                }
+            };
+
+            fetchUserData();
+        }
+    }, [usertype, userId]);
+
+
     return (<>
         {usertype && (
             <div className='nav-container'>
@@ -89,6 +122,11 @@ const Navigation = () => {
 
                             Logout
                         </Link>
+                    </div>
+
+                    <div className='userprof'>
+                        <p className='username'>{userData.fullname}</p>
+                        <p>{userData.email}</p>
                     </div>
 
                 </div>

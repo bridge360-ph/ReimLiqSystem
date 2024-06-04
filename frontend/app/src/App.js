@@ -15,6 +15,7 @@ import Liquidations from './pages/Liquidations.js';
 import ManageReim from './pages/ManageReim.js';
 import ManageLiq from './pages/ManageLiq.js';
 import Settings from './pages/Settings.js'
+import NotFound from './pages/NotFound.js';
 
 function App() {
   const [usertype, setUsertype] = useState(localStorage.getItem('usertype'));
@@ -41,6 +42,7 @@ function App() {
         <Route path='/managereim' element={<PrivateRoutes><ManageReim /></PrivateRoutes>}></Route>
         <Route path='/manageliq' element={<PrivateRoutes><ManageLiq /></PrivateRoutes>}></Route>
         <Route path='/settings' element={<PrivateRoutes><Settings /></PrivateRoutes>}></Route>
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </div>
   );
