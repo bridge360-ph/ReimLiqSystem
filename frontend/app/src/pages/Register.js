@@ -75,80 +75,91 @@ const Register = () => {
 
     return (
         <>
-            <Link to={'/login'}>Login</Link>
-            <div>
-                <label>
-                    <input
-                        type="radio"
-                        name="usertype"
-                        value="employee"
-                        checked={usertype === 'employee'}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    Register as Employee
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="usertype"
-                        value="admin"
-                        checked={usertype === 'admin'}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    Register as Admin
-                </label>
+            <div className='main-cont'>
+                <div className='form-container login-cont'>
+                    <img src='/assets/company.png'></img>
+
+                    <div className='radio-container'>
+                        <label>
+                            <input
+                                type="radio"
+                                name="usertype"
+                                value="employee"
+                                checked={usertype === 'employee'}
+                                onChange={(e) => setUserType(e.target.value)}
+                            />
+                            Register as Employee
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="usertype"
+                                value="admin"
+                                checked={usertype === 'admin'}
+                                onChange={(e) => setUserType(e.target.value)}
+                            />
+                            Register as Admin
+                        </label>
+                    </div>
+                    <div className='form-input'>
+                        <InputForm
+                            htmlFor="Fullname"
+                            labelText={'Fullname'}
+                            type={'text'}
+                            value={fullname}
+                            placeholder={'Juan Dela Cruz'}
+                            name={'Fullname'}
+                            handleChange={(e) => setFullName(e.target.value)}
+                        />
+                        <InputForm
+                            htmlFor="Email"
+                            labelText={'Email'}
+                            type={'email'}
+                            value={email}
+                            placeholder={'example@gmail.com'}
+                            name={'email'}
+                            handleChange={(e) => setEmail(e.target.value)}
+                        />
+                        <InputForm
+                            htmlFor="Password"
+                            labelText={'Password'}
+                            type={'password'}
+                            value={password}
+                            placeholder={''}
+                            name={'password'}
+                            handleChange={(e) => setPassword(e.target.value)}
+                        />
+                        {usertype === 'admin' && (
+                            <InputForm
+                                htmlFor="passkey"
+                                labelText={'Admin Key'}
+                                type={'text'}
+                                value={passkey}
+                                placeholder={''}
+                                name={'passkey'}
+                                handleChange={(e) => setPasskey(e.target.value)}
+                            />
+                        )}
+                        <InputForm
+                            htmlFor="position"
+                            labelText={'Position'}
+                            type={'text'}
+                            value={position}
+                            placeholder={'Department Head etc...'}
+                            name={'position'}
+                            handleChange={(e) => setPosition(e.target.value)}
+                        />
+                    </div>
+
+                    <button onClick={usertype === 'employee' ? handleEmpSubmit : handleAdmSubmit}>
+                        Register
+                    </button>
+                    <p>Already have an Account? <Link to={'/login'}>Login Here!</Link></p>
+                </div>
             </div>
 
-            <InputForm
-                htmlFor="Fullname"
-                labelText={'Fullname'}
-                type={'text'}
-                value={fullname}
-                placeholder={'Fullname'}
-                name={'Fullname'}
-                handleChange={(e) => setFullName(e.target.value)}
-            />
-            <InputForm
-                htmlFor="Email"
-                labelText={'Email'}
-                type={'email'}
-                value={email}
-                placeholder={'example@gmail.com'}
-                name={'email'}
-                handleChange={(e) => setEmail(e.target.value)}
-            />
-            <InputForm
-                htmlFor="Password"
-                labelText={'Password'}
-                type={'password'}
-                value={password}
-                placeholder={''}
-                name={'password'}
-                handleChange={(e) => setPassword(e.target.value)}
-            />
-            {usertype === 'admin' && (
-                <InputForm
-                    htmlFor="passkey"
-                    labelText={'Admin Key'}
-                    type={'text'}
-                    value={passkey}
-                    placeholder={''}
-                    name={'passkey'}
-                    handleChange={(e) => setPasskey(e.target.value)}
-                />
-            )}
-            <InputForm
-                htmlFor="position"
-                labelText={'Position'}
-                type={'text'}
-                value={position}
-                placeholder={'Department Head etc...'}
-                name={'position'}
-                handleChange={(e) => setPosition(e.target.value)}
-            />
-            <button onClick={usertype === 'employee' ? handleEmpSubmit : handleAdmSubmit}>
-                Register as {usertype === 'employee' ? 'Employee' : 'Admin'}
-            </button>
+
+
         </>
     );
 };

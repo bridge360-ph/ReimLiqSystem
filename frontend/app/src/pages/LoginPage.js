@@ -37,59 +37,62 @@ const LoginPage = ({ setUsertype }) => {
 
     return (
         <>
-        <div className='main-cont'>
-        
-        <div className='form-container login-cont'>
-            <img src='/assets/company.png'></img>
-            <div className='radio-container'>
-                <label>
-                    <input
-                        type="radio"
-                        name="usertype"
-                        value="employee"
-                        checked={usertype === "employee"}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    Login as Employee
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="usertype"
-                        value="admin"
-                        checked={usertype === "admin"}
-                        onChange={(e) => setUserType(e.target.value)}
-                    />
-                    Login as Admin
-                </label>
+            <div className='main-cont'>
+
+                <div className='form-container login-cont'>
+                    <img src='/assets/company.png'></img>
+                    <div className='radio-container'>
+                        <label>
+                            <input
+                                type="radio"
+                                name="usertype"
+                                value="employee"
+                                checked={usertype === "employee"}
+                                onChange={(e) => setUserType(e.target.value)}
+                            />
+                            Login as Employee
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="usertype"
+                                value="admin"
+                                checked={usertype === "admin"}
+                                onChange={(e) => setUserType(e.target.value)}
+                            />
+                            Login as Admin
+                        </label>
+                    </div>
+                    <div className='form-input'>
+                        <InputForm
+                            htmlFor="Email"
+                            labelText={'Email'}
+                            type={'email'}
+                            value={email}
+                            placeholder={'example@gmail.com'}
+                            name={"email"}
+                            handleChange={(e) => setEmail(e.target.value)}
+                        />
+                        <InputForm
+                            htmlFor="Password"
+                            labelText={'Password'}
+                            type={'password'}
+                            value={password}
+                            placeholder={''}
+                            name={"password"}
+                            handleChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <button onClick={handleLogin}>
+                        {usertype === "employee" ? "SIGN IN" : "SIGN IN"}
+                    </button>
+                    <p>Don't have an Account yet? <Link to={'/register'}>Register Here!</Link></p>
+                </div>
             </div>
-            <InputForm
-                htmlFor="Email"
-                labelText={'Email'}
-                type={'email'}
-                value={email}
-                placeholder={'example@gmail.com'}
-                name={"email"}
-                handleChange={(e) => setEmail(e.target.value)}
-            />
-            <InputForm
-                htmlFor="Password"
-                labelText={'Password'}
-                type={'password'}
-                value={password}
-                placeholder={''}
-                name={"password"}
-                handleChange={(e) => setPassword(e.target.value)}
-            />
-            <button onClick={handleLogin}>
-                {usertype === "employee" ? "Login as Employee" : "Login as Admin"}
-            </button>
-            <Link to={'/register'}> Register</Link>
-        </div>
-        </div>
-        
-            
-            
+
+
+
         </>
     );
 };

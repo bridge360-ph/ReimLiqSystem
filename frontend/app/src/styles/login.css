@@ -8,31 +8,100 @@
   48b3e1
   3973b1*/
 
-  .main-cont{
-    display: grid;
-    place-items: center;
-  }
+.main-cont {
+  display: grid;
+  place-items: center;
+}
 
-  .login-cont{
-    background-color:#0072ce ;
-  }
+.login-cont {
+  background-color: #0072ce;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
 
-  .form-container{
-    display: flex;
-    flex-direction: column;
-    padding: 2em;
-    border-radius: 5px; 
-  }
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4em 6em;
+  border-radius: 5px;
+  font-family: "Inter", sans-serif;
+  color: white;
+  font-weight: 200;
+}
 
-  .form-container h1{
-    font-family: "Inter", sans-serif;
+.form-container h1 {
+  font-family: "Inter", sans-serif;
   color: white;
   font-weight: 600;
   margin: 0 auto;
-  }
+}
 
-  .login-cont img{
-    background-color: white;
-    border-radius: 5px;
-    width: ;
-  }
+.login-cont img {
+  background-color: white;
+  border-radius: 5px;
+  width: 300px;
+  margin-bottom: 2em;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.form-input input {
+  display: flex;
+}
+
+.radio-container {
+  display: flex;
+  gap: 1em;
+  font-size: .8em;
+}
+
+.radio-container label {
+  cursor: pointer;
+}
+
+.inputform label {
+  font-size: .8em;
+}
+
+.inputform input {
+  width: 250px;
+  height: 20px;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  font-family: "Inter", sans-serif;
+}
+
+.inputform {
+  margin-bottom: 10px;
+}
+
+.form-container button {
+  cursor: pointer;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  color: #3973b1;
+  width: 100px;
+  margin-bottom: 2em;
+}
+
+.login-cont a {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.login-cont p {
+  font-size: .7em;
+}

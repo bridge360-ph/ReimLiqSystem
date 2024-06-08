@@ -2,7 +2,7 @@ import React from 'react'
 
 const InputForm = ({ htmlFor, labelText, type, name, value, handleChange, placeholder }) => {
     return (<>
-        <div>
+        <div className='inputform'>
 
             <label htmlFor={htmlFor} className='form-label'>
                 {labelText}
