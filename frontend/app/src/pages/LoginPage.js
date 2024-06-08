@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputForm from '../components/shared/InputForm';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import '../styles/login.css'
 
 const LoginPage = ({ setUsertype }) => {
     const [email, setEmail] = useState("");
@@ -36,8 +37,11 @@ const LoginPage = ({ setUsertype }) => {
 
     return (
         <>
-            <div>LoginPage</div>
-            <div>
+        <div className='main-cont'>
+        
+        <div className='form-container login-cont'>
+            <img src='/assets/company.png'></img>
+            <div className='radio-container'>
                 <label>
                     <input
                         type="radio"
@@ -81,6 +85,11 @@ const LoginPage = ({ setUsertype }) => {
                 {usertype === "employee" ? "Login as Employee" : "Login as Admin"}
             </button>
             <Link to={'/register'}> Register</Link>
+        </div>
+        </div>
+        
+            
+            
         </>
     );
 };

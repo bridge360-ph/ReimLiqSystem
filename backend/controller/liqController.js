@@ -352,7 +352,7 @@ export const getAllLiq = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      reimbursements: filteredLiq,
+      liquidations: filteredLiq,
     });
   } catch (error) {
     next(error)

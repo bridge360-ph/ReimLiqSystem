@@ -3,48 +3,44 @@ import admin from '../models/admin.js'
 
 
 export const empregisterController = async (req, res, next) => {
-    const { fullname, email, password, usertype,position } = req.body;
-  
-    if (!fullname) {
-      return res.status(400).send({ success: false, message: 'Please provide fullname' });
+  const { fullname, email, password, usertype, position } = req.body;
+
+  if (!fullname || !email || !password || !position || !usertype) {
+    return res.status(400).send({ success: false, message: 'Please provide all required fields' });
+  }
+
+  try {
+    // Check if an employee with the same email already exists
+    const existingEmp = await employee.findOne({ email });
+    if (existingEmp) {
+      return res.status(400).send({ success: false, message: 'Email is already registered' });
     }
-    if (!email) {
-      return res.status(400).send({ success: false, message: 'Please provide email' });
+
+    // Create the new employee
+    const emp = await employee.create({ fullname, email, password, usertype, position });
+    const token = emp.createJWT();
+    if (!token) {
+      console.error("Token generation failed");
+      return res.status(500).send({ success: false, message: 'Token generation failed' });
     }
-    if (!password) {
-      return res.status(400).send({ success: false, message: 'Please provide password' });
+    
+    res.status(201).send({
+      success: true,
+      message: 'Employee created',
+      emp,
+      token
+    });
+  } catch (error) {
+    // Check if the error is a duplicate key error (E11000)
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+      return res.status(400).send({ success: false, message: 'Email is already registered' });
     }
-    if (!position) {
-      return res.status(400).send({ success: false, message: 'Please provide position' });
-    }
-    if (!usertype) {
-      
-      return res.status(400).send({ success: false, message: 'Please provide usertype' });
-    }
-  
-    try {
-      const existingEmp = await employee.findOne({ email });
-      if (existingEmp) {
-        return res.status(400).send({ success: false, message: 'Email is already registered' });
-      }
-  
-      const emp = await employee.create({ fullname, email, password, usertype, position });
-      const token = emp.createJWT();
-      if (!token) {
-        console.error("Token generation failed");
-        return res.status(500).send({ success: false, message: 'Token generation failed' });
-      }
-      
-      res.status(201).send({
-        success: true,
-        message: 'Employee created',
-        emp,
-        token
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+    
+    // If it's not a duplicate key error, forward the error to the error middleware
+    next(error);
+  }
+};
+
 
 export const adminregisterController = async (req,res,next) =>{
 
