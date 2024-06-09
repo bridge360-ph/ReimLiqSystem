@@ -31,19 +31,22 @@ function App() {
     <div className='app-container'>
       {usertype && <Navigation />}
       <ToastContainer />
-      <Routes>
-        <Route path='/' element={<PublicRoute><LoginPage setUsertype={setUsertype} /></PublicRoute>}></Route>
-        <Route path='/register' element={<PublicRoute><Register /></PublicRoute>}></Route>
-        <Route path='/login' element={<PublicRoute><LoginPage setUsertype={setUsertype} /></PublicRoute>}></Route>
-        <Route path='/empdash' element={<PrivateRoutes><EmpDashboard /></PrivateRoutes>}></Route>
-        <Route path='/admdash' element={<PrivateRoutes><AdminDash /></PrivateRoutes>}></Route>
-        <Route path='/reimbursements' element={<PrivateRoutes><Reimbursements /></PrivateRoutes>}></Route>
-        <Route path='/liquidations' element={<PrivateRoutes><Liquidations /></PrivateRoutes>}></Route>
-        <Route path='/managereim' element={<PrivateRoutes><ManageReim /></PrivateRoutes>}></Route>
-        <Route path='/manageliq' element={<PrivateRoutes><ManageLiq /></PrivateRoutes>}></Route>
-        <Route path='/settings' element={<PrivateRoutes><Settings /></PrivateRoutes>}></Route>
-        <Route path='*' element={<NotFound />} />
-      </Routes>
+      <div className='content-cont'>
+        <Routes>
+          <Route path='/' element={<PublicRoute><LoginPage setUsertype={setUsertype} /></PublicRoute>}></Route>
+          <Route path='/register' element={<PublicRoute><Register /></PublicRoute>}></Route>
+          <Route path='/login' element={<PublicRoute><LoginPage setUsertype={setUsertype} /></PublicRoute>}></Route>
+          <Route path='/empdash' element={<PrivateRoutes><EmpDashboard /></PrivateRoutes>}></Route>
+          <Route path='/admdash' element={<PrivateRoutes><AdminDash /></PrivateRoutes>}></Route>
+          <Route path='/reimbursements' element={<PrivateRoutes><Reimbursements /></PrivateRoutes>}></Route>
+          <Route path='/liquidations' element={<PrivateRoutes><Liquidations /></PrivateRoutes>}></Route>
+          <Route path='/managereim' element={<PrivateRoutes><ManageReim /></PrivateRoutes>}></Route>
+          <Route path='/manageliq' element={<PrivateRoutes><ManageLiq /></PrivateRoutes>}></Route>
+          <Route path='/settings' element={<PrivateRoutes><Settings /></PrivateRoutes>}></Route>
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </div>
+
     </div>
   );
 }

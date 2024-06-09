@@ -1,6 +1,6 @@
 import employee from "../models/employee.js"
 import admin from '../models/admin.js'
-
+import bcrypt from 'bcryptjs'
 
 export const empregisterController = async (req, res, next) => {
   const { fullname, email, password, usertype, position } = req.body;
@@ -23,7 +23,7 @@ export const empregisterController = async (req, res, next) => {
       console.error("Token generation failed");
       return res.status(500).send({ success: false, message: 'Token generation failed' });
     }
-    
+
     res.status(201).send({
       success: true,
       message: 'Employee created',
@@ -35,57 +35,57 @@ export const empregisterController = async (req, res, next) => {
     if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
       return res.status(400).send({ success: false, message: 'Email is already registered' });
     }
-    
+
     // If it's not a duplicate key error, forward the error to the error middleware
     next(error);
   }
 };
 
 
-export const adminregisterController = async (req,res,next) =>{
+export const adminregisterController = async (req, res, next) => {
 
-        const {fullname,email,password,usertype,passkey, position} = req.body
+  const { fullname, email, password, usertype, passkey, position } = req.body
 
-        if(!fullname){
-            next('Provide Fullname')
-        }
-        if(!email){
-            next('Provide Email')
-        }
-        if(!password){
-            next('Provide Password')
-        }
-        if(!usertype){
-            next('Provide UserType')
-        }
-        if(!position){
-          next('Provide Position')
-      }
-        if (!passkey || passkey !== 'adminkey') {
-            next('Ivalid Passkey')
-        }
-      
-        
-        const existingadmin = await admin.findOne({email})
-        if(existingadmin){
-            next('Email is Already Registered')
-        }
+  if (!fullname) {
+    return next('Provide Fullname')
+  }
+  if (!email) {
+    return next('Provide Email')
+  }
+  if (!password) {
+    return next('Provide Password')
+  }
+  if (!usertype) {
+    return next('Provide UserType')
+  }
+  if (!position) {
+    return next('Provide Position')
+  }
+  if (!passkey || passkey !== 'adminkey') {
+    return next('Ivalid Passkey')
+  }
 
-        const adm = await admin.create({fullname,email,password,usertype,passkey,position})
-        const token = adm.createJWT();
-        if (!token) {
-          console.error("Token generation failed");
-          return res.status(500).send({ success: false, message: 'Token generation failed' });
-        }
-        res.status(201).send({
-            success:true,
-            message:'Admin Created',
-            adm,
-            token
-        })
-} 
 
-export const emploginController = async(req, res, next) => {
+  const existingadmin = await admin.findOne({ email })
+  if (existingadmin) {
+    return next('Email is Already Registered')
+  }
+
+  const adm = await admin.create({ fullname, email, password, usertype, passkey, position })
+  const token = adm.createJWT();
+  if (!token) {
+    console.error("Token generation failed");
+    return res.status(500).send({ success: false, message: 'Token generation failed' });
+  }
+  res.status(201).send({
+    success: true,
+    message: 'Admin Created',
+    adm,
+    token
+  })
+}
+
+export const emploginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -116,7 +116,7 @@ export const emploginController = async(req, res, next) => {
   }
 };
 
-export const admloginController = async(req, res, next) => {
+export const admloginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -129,11 +129,11 @@ export const admloginController = async(req, res, next) => {
       return res.status(401).json({ message: 'Invalid Email or Password' });
     }
 
-    const isMatch = await adm.comparePassword(password); // Ensure password is a string
+    // Compare the plain text password with the stored password
+    const isMatch = await adm.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid Credentials' });
     }
-    adm.password = undefined;
 
     const token = adm.createJWT();
     res.status(200).json({

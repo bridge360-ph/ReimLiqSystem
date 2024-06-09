@@ -94,10 +94,7 @@ const adminSchema = new mongoose.Schema({
   }
 });
 
-adminSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt)
-})
+
 
 // In your Admin model
 adminSchema.methods.createJWT = function () {
@@ -107,9 +104,8 @@ adminSchema.methods.createJWT = function () {
   return JWT.sign({ userId: this._id, usertype: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 };
 
-adminSchema.methods.comparePassword = async function (admPassword) {
-  const isMatch = await bcrypt.compare(admPassword, this.password)
-  return isMatch;
+adminSchema.methods.comparePassword = function (admPassword) {
+  return this.password === admPassword;
 }
 
 

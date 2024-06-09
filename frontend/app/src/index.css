@@ -9,6 +9,10 @@
   display: flex;
 }
 
+.content-cont {
+  padding: 1em;
+}
+
 .nav-container {
   display: flex;
   flex-direction: column;
@@ -107,11 +111,11 @@
 }
 
 
-.reim-container{
+.reim-container {
   display: flex;
   flex-direction: column;
 }
 
-.reims{
+.reims {
   display: flex;
 }

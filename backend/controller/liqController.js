@@ -369,7 +369,7 @@ export const getCreatedLiq = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      Liq: createdLiq,
+      liquidations: createdLiq,
     });
   } catch (error) {
     next(error);
@@ -378,16 +378,16 @@ export const getCreatedLiq = async (req, res, next) => {
 
 export const getFilteredLiq = async (req, res, next) => {
   try {
-    const { status } = req.body;
+    const { status } = req.query;
     const { userId } = req.user;
 
     // Define valid status and paystatus values
-    const validStatus = ['pending', 'approved', 'rejected'];
+    const validStatus = ['pending', 'accepted', 'rejected'];
     const validPayStatus = ['unreturned', 'returned'];
 
     // Validate the status parameter
-    if (!validStatus.includes(status) && !validPayStatus.includes(status)) {
-      return res.status(400).json({ message: 'Invalid status provided' });
+    if (!status || (!validStatus.includes(status) && !validPayStatus.includes(status))) {
+      return res.status(400).json({ message: 'Invalid or missing status parameter' });
     }
 
     let filterCriteria = { created_by: userId };
@@ -399,7 +399,7 @@ export const getFilteredLiq = async (req, res, next) => {
       filterCriteria.paystatus = status;
     }
 
-    // Retrieve reimbursements based on the filter criteria
+    // Retrieve liquidations based on the filter criteria
     const liq = await liquidation.find(filterCriteria);
 
     res.status(200).json({
@@ -410,6 +410,7 @@ export const getFilteredLiq = async (req, res, next) => {
     next(error);
   }
 };
+
 
 
 export const getFilteredLiq2 = async (req, res, next) => {

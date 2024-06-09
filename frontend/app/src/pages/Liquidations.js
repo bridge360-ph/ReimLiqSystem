@@ -11,8 +11,11 @@ const Liquidations = () => {
     const [error, setError] = useState(null);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedLiq, setSelectedLiq] = useState(null);
-
     const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false);
+    const [liquidationItems, setliquidationItems] = useState([]);
+    const [isUpdateItemModalOpen, setIsUpdateItemModalOpen] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState(null);
+
     const openAddItemModal = (reimbursementId) => {
         setSelectedLiq(reimbursementId);
         setIsAddItemModalOpen(true); // Open the modal when the button is clicked
@@ -21,7 +24,7 @@ const Liquidations = () => {
         setIsAddItemModalOpen(false);
     };
 
-    const [liquidationItems, setliquidationItems] = useState([]);
+
     const fetchItemsForLiquidation = (liquidationId) => {
         if (selectedLiq === liquidationId) {
             // If the clicked reimbursement is already selected, hide the items
@@ -94,7 +97,7 @@ const Liquidations = () => {
             });
 
             if (response.data.success) {
-                setLiquidations(response.data.Liq);
+                setLiquidations(response.data.liquidations);
             } else {
                 console.error('Failed to fetch liquidations');
                 setError('Failed to fetch liquidations');
@@ -128,8 +131,7 @@ const Liquidations = () => {
     };
 
 
-    const [isUpdateItemModalOpen, setIsUpdateItemModalOpen] = useState(false);
-    const [selectedItemId, setSelectedItemId] = useState(null);
+
     const handleUpdateItem = (itemId) => {
         setSelectedItemId(itemId);
         setIsUpdateItemModalOpen(true); // Open the UpdateReimItem modal

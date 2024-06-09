@@ -404,11 +404,11 @@ export const getCreatedReim = async (req, res, next) => {
 
 export const getFilteredReim = async (req, res, next) => {
   try {
-    const { status } = req.body;
+    const { status } = req.query; // Extract status from query parameters
     const { userId } = req.user;
 
     // Define valid status and paystatus values
-    const validStatus = ['pending', 'approved', 'rejected'];
+    const validStatus = ['pending', 'accepted', 'rejected'];
     const validPayStatus = ['unpaid', 'paid'];
 
     // Validate the status parameter
@@ -436,6 +436,7 @@ export const getFilteredReim = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const getFilteredReim2 = async (req, res, next) => {
   try {

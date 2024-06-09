@@ -5,7 +5,6 @@ import UpdateReim from '../components/shared/UpdateReim.js';
 import AddReimItem from '../components/shared/AddReimItem.js';
 import UpdateReimItem from '../components/shared/UpdateReimItem.js';
 
-
 const Reimbursements = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -13,14 +12,22 @@ const Reimbursements = () => {
     const [isUpdateItemModalOpen, setIsUpdateItemModalOpen] = useState(false);
     const [selectedReimbursement, setSelectedReimbursement] = useState(null);
     const [reimbursements, setReimbursements] = useState([]);
+    const [paidReimbursements, setPaidReimbursements] = useState([]);
+    const [unpaidReimbursements, setUnpaidReimbursements] = useState([]);
     const [error, setError] = useState(null);
     const [selectedReimbursementId, setSelectedReimbursementId] = useState(null);
     const [reimbursementItems, setReimbursementItems] = useState([]);
     const [selectedItemId, setSelectedItemId] = useState(null);
+    const [status, setStatus] = useState('pending');
+    const [filteredReimbursements, setFilteredReimbursements] = useState([]);
 
     useEffect(() => {
         fetchReimbursements();
     }, []);
+
+    useEffect(() => {
+        filterReimbursements();
+    }, [reimbursements, status]);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -28,6 +35,10 @@ const Reimbursements = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
+    };
+
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
     };
 
     const openUpdateModal = (reimbursement) => {
@@ -41,18 +52,17 @@ const Reimbursements = () => {
 
     const openAddItemModal = (reimbursementId) => {
         setSelectedReimbursementId(reimbursementId);
-        setIsAddItemModalOpen(true); // Open the modal when the button is clicked
+        setIsAddItemModalOpen(true);
     };
 
     const openUpdateItemModal = (itemId) => {
-        setSelectedItemId(itemId); // Set the selected item ID
-        setIsUpdateItemModalOpen(true); // Open the UpdateReimItem modal
+        setSelectedItemId(itemId);
+        setIsUpdateItemModalOpen(true);
     };
 
     const closeUpdateItemModal = () => {
-        setIsUpdateItemModalOpen(false); // Close the UpdateReimItem modal
+        setIsUpdateItemModalOpen(false);
     };
-
 
     const closeAddItemModal = () => {
         setIsAddItemModalOpen(false);
@@ -69,7 +79,12 @@ const Reimbursements = () => {
             });
 
             if (response.data.success) {
+                const paid = response.data.reimbursements.filter(reim => reim.status === 'paid');
+                const unpaid = response.data.reimbursements.filter(reim => reim.status !== 'paid');
                 setReimbursements(response.data.reimbursements);
+                setPaidReimbursements(paid);
+                setUnpaidReimbursements(unpaid);
+                filterReimbursements(); // Call filter function initially
             } else {
                 console.error('Failed to fetch reimbursements');
                 setError('Failed to fetch reimbursements');
@@ -80,20 +95,25 @@ const Reimbursements = () => {
         }
     };
 
-    // Function to fetch reimbursement items when "Show Items" button is clicked
+    const filterReimbursements = () => {
+        if (status === 'pending') {
+            setFilteredReimbursements(reimbursements.filter(reim => reim.status === 'pending'));
+        } else if (status === 'accepted') {
+            setFilteredReimbursements(reimbursements.filter(reim => reim.status === 'accepted'));
+        } else if (status === 'rejected') {
+            setFilteredReimbursements(reimbursements.filter(reim => reim.status === 'rejected'));
+        }
+    };
+
     const fetchItemsForReimbursement = (reimbursementId) => {
         if (selectedReimbursementId === reimbursementId) {
-            // If the clicked reimbursement is already selected, hide the items
             setSelectedReimbursementId(null);
-            // Reset the reimbursementItems state to an empty array
             setReimbursementItems([]);
         } else {
-            // Otherwise, fetch the items for the reimbursement
             setSelectedReimbursementId(reimbursementId);
             fetchReimbursementItems(reimbursementId);
         }
     };
-
 
     const fetchReimbursementItems = async (reimbursementId) => {
         const token = localStorage.getItem('token');
@@ -116,8 +136,6 @@ const Reimbursements = () => {
         }
     };
 
-
-
     const handleDelete = async (id) => {
         const token = localStorage.getItem('token');
 
@@ -129,8 +147,9 @@ const Reimbursements = () => {
             });
 
             if (response.data.success) {
-                // Remove the deleted reimbursement from the list
                 setReimbursements(reimbursements.filter(reimbursement => reimbursement._id !== id));
+                setPaidReimbursements(paidReimbursements.filter(reimbursement => reimbursement._id !== id));
+                setUnpaidReimbursements(unpaidReimbursements.filter(reimbursement => reimbursement._id !== id));
             } else {
                 console.error('Failed to delete reimbursement');
                 setError('Failed to delete reimbursement');
@@ -152,7 +171,6 @@ const Reimbursements = () => {
             });
 
             if (response.data.success) {
-                // Remove the deleted item from the list
                 setReimbursementItems(reimbursementItems.filter(item => item._id !== itemId));
             } else {
                 console.error('Failed to delete item');
@@ -163,12 +181,11 @@ const Reimbursements = () => {
             setError('Error deleting item');
         }
     };
+
     const handleUpdateItem = (itemId) => {
         setSelectedItemId(itemId);
-        setIsUpdateItemModalOpen(true); // Open the UpdateReimItem modal
+        setIsUpdateItemModalOpen(true);
     };
-
-
 
     return (
         <div>
@@ -194,36 +211,76 @@ const Reimbursements = () => {
 
             <div>
                 <h2>Reimbursement List</h2>
+                <label htmlFor="status">Filter by Status: </label>
+                <select id="status" value={status} onChange={handleStatusChange}>
+                    <option value="pending">Pending</option>
+                    <option value="accepted">Accepted</option>
+                    <option value="rejected">Rejected</option>
+                </select>
                 <ul>
-                    {reimbursements.map(reimbursement => (
-                        <li key={reimbursement._id}>
-                            {reimbursement.name} - {reimbursement.description}
-                            {reimbursement.total_price}
-                            <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
-                            <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
-                            <button onClick={() => openAddItemModal(reimbursement._id)}>Add Item</button>
-                            <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
+                    <h3>Filtered Reimbursements</h3>
+                    {filteredReimbursements.length > 0 ? (
+                        filteredReimbursements.map(reimbursement => (
+                            <li key={reimbursement._id}>
+                                {reimbursement.name} - {reimbursement.description}
+                                {reimbursement.total_price}
+                                <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
+                                <button onClick={() => openAddItemModal(reimbursement._id)}>Add Item</button>
+                                <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
 
 
+                                {selectedReimbursementId === reimbursement._id && (
+                                    <ul>
+                                        {reimbursementItems.map(item => (
+                                            <li key={item._id}>
+                                                Item: {item.item}<br />
+                                                Price: {item.price}<br />
+                                                Quantity: {item.quantity}<br />
+                                                Total Price: {item.total_price}
+                                                <button onClick={() => handleDeleteItem(item._id)}>Delete Item</button>
+                                                <button onClick={() => handleUpdateItem(item._id)}>Update</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No reimbursements found.</p>
+                    )}
+                </ul>
+                <ul>
+                    <h3>Paid Reimbursements</h3>
+                    {paidReimbursements.length > 0 ? (
+                        paidReimbursements.map(reimbursement => (
+                            <li key={reimbursement._id}>
+                                {reimbursement.name} - {reimbursement.description}
+                                {reimbursement.total_price}
+                                <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
 
-                            {selectedReimbursementId === reimbursement._id && (
-                                <ul>
-                                    {reimbursementItems.map(item => (
-                                        <li key={item._id}>
-                                            Item: {item.item}<br />
-                                            Price: {item.price}<br />
-                                            Quantity: {item.quantity}<br />
-                                            Total Price: {item.total_price}
-                                            <button onClick={() => handleDeleteItem(item._id)}>Delete Item</button>
-                                            <button onClick={() => handleUpdateItem(item._id)}>Update</button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            </li>
+                        ))
+                    ) : (
+                        <p>No paid reimbursements yet</p>
+                    )}
+                </ul>
+                <ul>
+                    <h3>Unpaid Reimbursements</h3>
+                    {unpaidReimbursements.length > 0 ? (
+                        unpaidReimbursements.map(reimbursement => (
+                            <li key={reimbursement._id}>
+                                {reimbursement.name} - {reimbursement.description}
+                                {reimbursement.total_price}
+                                <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
 
-                        </li>
-                    ))}
-
+                            </li>
+                        ))
+                    ) : (
+                        <p>The reimbursement must be accepted first</p>
+                    )}
                 </ul>
             </div>
         </div>
