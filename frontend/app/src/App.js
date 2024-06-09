@@ -19,17 +19,37 @@ import NotFound from './pages/NotFound.js';
 
 function App() {
   const [usertype, setUsertype] = useState(localStorage.getItem('usertype'));
+  const [isNavVisible, setIsNavVisible] = useState(window.innerWidth > 1040); // Initially true if screen width is greater than 1040px
 
   useEffect(() => {
-    const storedUsertype = localStorage.getItem('usertype');
-    if (storedUsertype !== usertype) {
-      setUsertype(storedUsertype);
-    }
+    const handleResize = () => {
+      setIsNavVisible(window.innerWidth > 1040); // Update visibility based on screen width
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
+
+  const toggleNav = () => {
+    setIsNavVisible(!isNavVisible);
+  };
 
   return (
     <div className='app-container'>
-      {usertype && <Navigation />}
+      <div>
+        {usertype && (
+          <div className={`hamburger ${!isNavVisible ? 'active' : ''}`} onClick={toggleNav}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill=" #0072ce" viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M1.5 3a.5.5 0 0 1 .5-.5h12a.5.5 0 0 1 0 1h-12a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h12a.5.5 0 0 1 0 1h-12a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h12a.5.5 0 0 1 0 1h-12a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </div>
+        )}
+        {usertype && isNavVisible && <Navigation toggleNav={toggleNav} />}
+      </div>
+
       <ToastContainer />
       <div className='content-cont'>
         <Routes>
@@ -46,7 +66,6 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
-
     </div>
   );
 }
