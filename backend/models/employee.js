@@ -32,7 +32,7 @@ const employeeSchema = new mongoose.Schema({
   ],
   image: {
     type: String,
-    default:"none"
+    default: "none"
   },
   position: {
     type: String
@@ -46,15 +46,9 @@ const employeeSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-employeeSchema.pre("save", async function(next) {
-  if (!this.isModified('password')) return next();
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
 
-employeeSchema.methods.createJWT = function() {
+employeeSchema.methods.createJWT = function () {
   if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
   }
@@ -63,8 +57,8 @@ employeeSchema.methods.createJWT = function() {
 
 
 // Password compare method
-employeeSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+employeeSchema.methods.comparePassword = async function (candidatePassword) {
+  return this.password === candidatePassword;
 }
 
 export default mongoose.model('Employee', employeeSchema);

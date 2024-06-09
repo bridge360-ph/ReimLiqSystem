@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../styles/settings.css'
 
 const Settings = () => {
     const [formData, setFormData] = useState({
@@ -74,12 +75,13 @@ const Settings = () => {
         }
     };
 
-    return (
+    return (<>
+        <h2 className='settings-header'>SETTINGS</h2>
         <div className="settings-container">
-            <h2>Settings</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>Update Your Credentials</h2>
+            <form onSubmit={handleSubmit} className='settings-form'>
                 <div className="form-group">
-                    <label htmlFor="fullname">Full Name</label>
+                    <label htmlFor="fullname">Full Name:</label>
                     <input
                         type="text"
                         id="fullname"
@@ -90,7 +92,7 @@ const Settings = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">Email:</label>
                     <input
                         type="email"
                         id="email"
@@ -101,7 +103,7 @@ const Settings = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Password:</label>
                     <input
                         type="password"
                         id="password"
@@ -112,7 +114,7 @@ const Settings = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="position">Position</label>
+                    <label htmlFor="position">Position:</label>
                     <input
                         type="text"
                         id="position"
@@ -122,13 +124,13 @@ const Settings = () => {
                         required
                     />
                 </div>
-                <button type="submit">
-                    {localStorage.getItem('usertype') === 'admin' ? 'Update as Admin' : 'Update as Employee'}
+                <button type="submit" className='settings-button'>
+                    {localStorage.getItem('usertype') === 'admin' ? 'UPDATE' : 'UPDATE'}
                 </button>
             </form>
             <ToastContainer />
         </div>
-    );
+    </>);
 };
 
 export default Settings;

@@ -3,16 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputForm from '../components/shared/InputForm';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import '../styles/login.css'
+import '../styles/login.css';
+import Spinner from '../components/shared/Spinner';
 
 const LoginPage = ({ setUsertype }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [usertype, setUserType] = useState("employee");
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
         try {
+            setLoading(true); // Show spinner
             const loginData = { email, password };
             const url = usertype === "employee" ? "/api/v1/auth/emplogin" : "/api/v1/auth/admlogin";
             const { data } = await axios.post(url, loginData);
@@ -27,72 +30,74 @@ const LoginPage = ({ setUsertype }) => {
                 navigate(redirectPath);
                 toast.success("Login successful");
             } else {
-                alert('Login failed. Please check your credentials and try again.');
+                toast.error('Login failed. Please check your credentials and try again.');
             }
         } catch (error) {
             console.error("Login error:", error);
-            alert('An error occurred during login. Please try again.');
+            toast.error('An error occurred during login. Please try again.');
+        } finally {
+            setLoading(false); // Hide spinner
         }
     };
 
     return (
         <>
             <div className='main-cont'>
-
-                <div className='form-container login-cont'>
-                    <img src='/assets/company.png'></img>
-                    <div className='radio-container'>
-                        <label>
-                            <input
-                                type="radio"
-                                name="usertype"
-                                value="employee"
-                                checked={usertype === "employee"}
-                                onChange={(e) => setUserType(e.target.value)}
+                {loading ? (
+                    <Spinner />
+                ) : (
+                    <div className='form-container login-cont'>
+                        <img src='/assets/company.png' alt='Company Logo' />
+                        <div className='radio-container'>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="usertype"
+                                    value="employee"
+                                    checked={usertype === "employee"}
+                                    onChange={(e) => setUserType(e.target.value)}
+                                />
+                                Login as Employee
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="usertype"
+                                    value="admin"
+                                    checked={usertype === "admin"}
+                                    onChange={(e) => setUserType(e.target.value)}
+                                />
+                                Login as Admin
+                            </label>
+                        </div>
+                        <div className='form-input'>
+                            <InputForm
+                                htmlFor="Email"
+                                labelText={'Email'}
+                                type={'email'}
+                                value={email}
+                                placeholder={'example@gmail.com'}
+                                name={"email"}
+                                handleChange={(e) => setEmail(e.target.value)}
                             />
-                            Login as Employee
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="usertype"
-                                value="admin"
-                                checked={usertype === "admin"}
-                                onChange={(e) => setUserType(e.target.value)}
+                            <InputForm
+                                htmlFor="Password"
+                                labelText={'Password'}
+                                type={'password'}
+                                value={password}
+                                placeholder={''}
+                                name={"password"}
+                                handleChange={(e) => setPassword(e.target.value)}
                             />
-                            Login as Admin
-                        </label>
-                    </div>
-                    <div className='form-input'>
-                        <InputForm
-                            htmlFor="Email"
-                            labelText={'Email'}
-                            type={'email'}
-                            value={email}
-                            placeholder={'example@gmail.com'}
-                            name={"email"}
-                            handleChange={(e) => setEmail(e.target.value)}
-                        />
-                        <InputForm
-                            htmlFor="Password"
-                            labelText={'Password'}
-                            type={'password'}
-                            value={password}
-                            placeholder={''}
-                            name={"password"}
-                            handleChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
+                        </div>
 
-                    <button onClick={handleLogin}>
-                        {usertype === "employee" ? "SIGN IN" : "SIGN IN"}
-                    </button>
-                    <p>Don't have an Account yet? <Link to={'/register'}>Register Here!</Link></p>
-                </div>
+                        <button onClick={handleLogin}>
+                            {usertype === "employee" ? "SIGN IN" : "SIGN IN"}
+                        </button>
+                        <p>Don't have an Account yet? <Link to={'/register'}>Register Here!</Link></p>
+                    </div>
+                )}
             </div>
-
-
-
         </>
     );
 };

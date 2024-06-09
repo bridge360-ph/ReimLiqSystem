@@ -18,10 +18,9 @@ export const updateEmpController = async (req, res, next) => {
     if (email) emp.email = email;
     if (position) emp.position = position;
 
-    // Hash and update password if provided
+    // Update password if provided
     if (password) {
-      const salt = await bcrypt.genSalt(10);
-      emp.password = await bcrypt.hash(password, salt);
+      emp.password = password; // Directly assign the password
     }
 
     // Save the updated employee
@@ -36,6 +35,7 @@ export const updateEmpController = async (req, res, next) => {
     next(error);
   }
 };
+
 
 import admin from '../models/admin.js'; // Ensure correct import
 
