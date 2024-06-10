@@ -47,7 +47,7 @@ const EmpDashboard = () => {
                 try {
                     const token = localStorage.getItem('token');
                     const response = await axios.get('/api/v1/reim/get-created-reim', {
-
+                        params: { limit: 3 },
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -70,6 +70,7 @@ const EmpDashboard = () => {
                 try {
                     const token = localStorage.getItem('token');
                     const response = await axios.get('/api/v1/liq/get-created-liq', {
+                        params: { limit: 3 },
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -97,17 +98,21 @@ const EmpDashboard = () => {
     return (
         <>
             {usertype === 'employee' && (<>
-                <h1>Welcome {userData.fullname}</h1>
+                <h1 className='settings-header'>Welcome {userData.fullname} !</h1>
                 <div className='dash-container'>
                     <div className='flex-cont'>
                         <div className='dash-reims dashconts'>
-                            <h2>Created Reimbursements</h2>
+                            <div className='dash-header'>
+                                <h2>Your Reimbursements</h2>
+                                <Link to={'/reimbursements'}>See More</Link>
+                            </div>
+
                             {reimbursements.length > 0 ? (
                                 reimbursements.map(reim => (
                                     <div key={reim._id} className='reim-item'>
                                         <h3>{reim.name}</h3>
                                         <p>{reim.description}</p>
-                                        <p>Total Amount: {reim.total_amount}</p>
+                                        <p>Total Amount: {reim.total_price}</p>
                                         <p>Status: {reim.status}</p>
                                     </div>
                                 ))
@@ -117,7 +122,10 @@ const EmpDashboard = () => {
                         </div>
 
                         <div className='dash-paid-reims dashconts'>
-                            <h2>Paid Reimbursements</h2>
+                            <div className='dash-header'>
+                                <h2>Paid Reimbursements</h2>
+                                <Link to={'/reimbursements'}>See More</Link>
+                            </div>
                             {paidReimbursements.length > 0 ? (
                                 paidReimbursements.map(reim => (
                                     <div key={reim._id} className='reim-item'>
@@ -135,7 +143,10 @@ const EmpDashboard = () => {
 
                     <div className='flex-cont'>
                         <div className='dash-liqs dashconts'>
-                            <h2>Created Liquidations</h2>
+                            <div className='dash-header'>
+                                <h2>Your Liquidations</h2>
+                                <Link to={'/liquidations'}>See More</Link>
+                            </div>
                             {liquidations.length > 0 ? (
                                 liquidations.map(liq => (
                                     <div key={liq._id} className='liq-item'>
@@ -152,7 +163,10 @@ const EmpDashboard = () => {
                         </div>
 
                         <div className='dash-returned-liqs dashconts'>
-                            <h2>Returned Liquidations</h2>
+                            <div className='dash-header'>
+                                <h2>Returned Liquidations</h2>
+                                <Link to={'/reimbursements'}>See More</Link>
+                            </div>
                             {returnedLiquidations.length > 0 ? (
                                 returnedLiquidations.map(liq => (
                                     <div key={liq._id} className='liq-item'>

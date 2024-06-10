@@ -363,9 +363,12 @@ export const getAllLiq = async (req, res, next) => {
 export const getCreatedLiq = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-
+    const { page = 1, limit = 5 } = req.query;
+    const offset = (page - 1) * limit;
     // Retrieve reimbursements created by the user from the database
-    const createdLiq = await liquidation.find({ created_by: userId });
+    const createdLiq = await liquidation.find({ created_by: userId })
+      .skip(offset)
+      .limit(limit);
 
     res.status(200).json({
       success: true,

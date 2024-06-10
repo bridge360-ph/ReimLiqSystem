@@ -44,7 +44,10 @@ const Navigation = ({ toggleNav }) => {
     }, [usertype, userId]);
 
     const closeMenu = () => {
-        toggleNav();
+        const screenWidth = window.innerWidth;
+        if (screenWidth <= 1040) {
+            toggleNav();
+        }
     };
 
     return (<>
