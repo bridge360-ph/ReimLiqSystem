@@ -1,0 +1,82 @@
+.reimpage {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-reim {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    border: none;
+    background-color: #0072ce;
+    color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    font-family: "Inter", sans-serif;
+    color: white;
+    font-weight: 300;
+    gap: .5em;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 1em;
+    border-radius: 5px;
+    margin-bottom: 1em;
+}
+
+.reimpagecont {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.flexy .filt {
+    margin-right: 5%;
+}
+
+.reimpagecont h2 {
+    font-family: "Inter", sans-serif;
+    color: #0072ce;
+    font-weight: 500;
+}
+
+.flexy {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.reim-card {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 95%;
+}
+
+.reimindiv {
+    font-family: "Inter", sans-serif;
+    background-color: #0072ce;
+    color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    padding: 1em;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    font-size: .8em;
+    align-items: left;
+}
+
+.reim-butts {
+    display: flex;
+    gap: 5px;
+}
+
+.reim-butts button {
+    display: flex;
+    background-color: white;
+    padding: .5em;
+    border: none;
+    border-radius: 5px;
+}
