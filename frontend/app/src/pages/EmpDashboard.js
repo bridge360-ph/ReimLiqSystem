@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-
+import '../styles/empdash.css'
 const EmpDashboard = () => {
     const usertype = localStorage.getItem('usertype');
     const navigate = useNavigate();
@@ -47,6 +47,7 @@ const EmpDashboard = () => {
                 try {
                     const token = localStorage.getItem('token');
                     const response = await axios.get('/api/v1/reim/get-created-reim', {
+
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -95,76 +96,80 @@ const EmpDashboard = () => {
 
     return (
         <>
-            {usertype === 'employee' && (
+            {usertype === 'employee' && (<>
+                <h1>Welcome {userData.fullname}</h1>
                 <div className='dash-container'>
-                    <h1>Welcome {userData.fullname}</h1>
+                    <div className='flex-cont'>
+                        <div className='dash-reims dashconts'>
+                            <h2>Created Reimbursements</h2>
+                            {reimbursements.length > 0 ? (
+                                reimbursements.map(reim => (
+                                    <div key={reim._id} className='reim-item'>
+                                        <h3>{reim.name}</h3>
+                                        <p>{reim.description}</p>
+                                        <p>Total Amount: {reim.total_amount}</p>
+                                        <p>Status: {reim.status}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No created reimbursements yet</p>
+                            )}
+                        </div>
 
-                    <div className='dash-reims'>
-                        <h2>Created Reimbursements</h2>
-                        {reimbursements.length > 0 ? (
-                            reimbursements.map(reim => (
-                                <div key={reim._id} className='reim-item'>
-                                    <h3>{reim.name}</h3>
-                                    <p>{reim.description}</p>
-                                    <p>Total Amount: {reim.total_amount}</p>
-                                    <p>Status: {reim.status}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No created reimbursements yet</p>
-                        )}
+                        <div className='dash-paid-reims dashconts'>
+                            <h2>Paid Reimbursements</h2>
+                            {paidReimbursements.length > 0 ? (
+                                paidReimbursements.map(reim => (
+                                    <div key={reim._id} className='reim-item'>
+                                        <h3>{reim.name}</h3>
+                                        <p>{reim.description}</p>
+                                        <p>Total Amount: {reim.total_amount}</p>
+                                        <p>Status: {reim.status}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No reimbursements paid yet</p>
+                            )}
+                        </div>
                     </div>
 
-                    <div className='dash-paid-reims'>
-                        <h2>Paid Reimbursements</h2>
-                        {paidReimbursements.length > 0 ? (
-                            paidReimbursements.map(reim => (
-                                <div key={reim._id} className='reim-item'>
-                                    <h3>{reim.name}</h3>
-                                    <p>{reim.description}</p>
-                                    <p>Total Amount: {reim.total_amount}</p>
-                                    <p>Status: {reim.status}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No reimbursements paid yet</p>
-                        )}
+                    <div className='flex-cont'>
+                        <div className='dash-liqs dashconts'>
+                            <h2>Created Liquidations</h2>
+                            {liquidations.length > 0 ? (
+                                liquidations.map(liq => (
+                                    <div key={liq._id} className='liq-item'>
+                                        <h3>{liq.name}</h3>
+                                        <p>{liq.description}</p>
+                                        <p>Initial Amount: {liq.initial_amount}</p>
+                                        <p>Remaining Amount: {liq.remaining_amount}</p>
+                                        <p>Status: {liq.status}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No created liquidations yet</p>
+                            )}
+                        </div>
+
+                        <div className='dash-returned-liqs dashconts'>
+                            <h2>Returned Liquidations</h2>
+                            {returnedLiquidations.length > 0 ? (
+                                returnedLiquidations.map(liq => (
+                                    <div key={liq._id} className='liq-item'>
+                                        <h3>{liq.name}</h3>
+                                        <p>{liq.description}</p>
+                                        <p>Total Amount: {liq.total_amount}</p>
+                                        <p>Status: {liq.status}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No liquidations returned yet</p>
+                            )}
+                        </div>
                     </div>
 
-                    <div className='dash-liqs'>
-                        <h2>Created Liquidations</h2>
-                        {liquidations.length > 0 ? (
-                            liquidations.map(liq => (
-                                <div key={liq._id} className='liq-item'>
-                                    <h3>{liq.name}</h3>
-                                    <p>{liq.description}</p>
-                                    <p>Initial Amount: {liq.initial_amount}</p>
-                                    <p>Remaining Amount: {liq.remaining_amount}</p>
-                                    <p>Status: {liq.status}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No created liquidations yet</p>
-                        )}
-                    </div>
-
-                    <div className='dash-returned-liqs'>
-                        <h2>Returned Liquidations</h2>
-                        {returnedLiquidations.length > 0 ? (
-                            returnedLiquidations.map(liq => (
-                                <div key={liq._id} className='liq-item'>
-                                    <h3>{liq.name}</h3>
-                                    <p>{liq.description}</p>
-                                    <p>Total Amount: {liq.total_amount}</p>
-                                    <p>Status: {liq.status}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No liquidations returned yet</p>
-                        )}
-                    </div>
                 </div>
-            )}
+            </>)}
         </>
     );
 };

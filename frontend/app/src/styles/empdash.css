@@ -1,0 +1,19 @@
+.dash-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2%;
+}
+
+.flex-cont {
+    display: flex;
+    justify-content: center;
+}
+
+.dashconts {
+    height: 300px;
+    width: 500px;
+    overflow: auto;
+    padding: 2em;
+}

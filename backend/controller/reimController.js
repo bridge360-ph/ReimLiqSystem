@@ -389,9 +389,15 @@ export const getAllReim = async (req, res, next) => {
 export const getCreatedReim = async (req, res, next) => {
   try {
     const userId = req.user.userId;
+    const { page = 1, limit = 5 } = req.query; // Default limit to 5 items per page
 
-    // Retrieve reimbursements created by the user from the database
-    const createdReimbursements = await Reimbursement.find({ created_by: userId });
+    // Calculate the offset based on the page number and limit
+    const offset = (page - 1) * limit;
+
+    // Retrieve reimbursements created by the user from the database with pagination
+    const createdReimbursements = await Reimbursement.find({ created_by: userId })
+      .skip(offset)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
