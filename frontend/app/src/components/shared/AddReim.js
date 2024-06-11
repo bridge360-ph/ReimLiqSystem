@@ -48,10 +48,10 @@ const AddReim = ({ isOpen, onClose }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='formcont'>
                     <InputForm
                         htmlFor="name"
-                        labelText="Name"
+                        labelText="Name: "
                         type="text"
                         value={name}
                         handleChange={handleNameChange}
@@ -59,7 +59,7 @@ const AddReim = ({ isOpen, onClose }) => {
                     />
                     <InputForm
                         htmlFor="description"
-                        labelText="Description"
+                        labelText="Description: "
                         type="text"
                         value={description}
                         handleChange={handleDescriptionChange}
