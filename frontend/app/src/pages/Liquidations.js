@@ -21,6 +21,7 @@ const Liquidations = () => {
     const [status, setStatus] = useState('pending');
     const [filteredLiq, setFilteredLiq] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showItemsLiqId, setshowItemsLiqId] = useState(null);
 
     const openAddItemModal = (reimbursementId) => {
         setSelectedLiq(reimbursementId);
@@ -81,15 +82,15 @@ const Liquidations = () => {
         }
     };
 
-    const fetchItemsForLiquidation = (liquidationId) => {
-        if (selectedLiq === liquidationId) {
+    const fetchItemsForLiquidation = (liquidationId, e) => {
+        if (showItemsLiqId === liquidationId) {
             // If the clicked reimbursement is already selected, hide the items
-            setSelectedLiq(null);
+            setshowItemsLiqId(null);
             // Reset the reimbursementItems state to an empty array
             setliquidationItems([]);
         } else {
             // Otherwise, fetch the items for the reimbursement
-            setSelectedLiq(liquidationId);
+            setshowItemsLiqId(liquidationId);
             console.log(liquidationId)
             fetchLiquidationItems(liquidationId);
         }
@@ -282,7 +283,7 @@ const Liquidations = () => {
                                                 <button onClick={() => fetchItemsForLiquidation(liquidation._id)}>Show Items</button></div>
                                         </div>
 
-                                        {selectedLiq === liquidation._id && (
+                                        {showItemsLiqId === liquidation._id && (
                                             isLoading ? (
                                                 <Spinner /> // Show spinner while loading
                                             ) : (
@@ -348,7 +349,7 @@ const Liquidations = () => {
                                         </div>
 
 
-                                        {selectedLiq === liquidation._id && (
+                                        {showItemsLiqId === liquidation._id && (
                                             isLoading ? (
                                                 <Spinner /> // Show spinner while loading
                                             ) : (
@@ -405,7 +406,7 @@ const Liquidations = () => {
                                                 <button onClick={() => fetchItemsForLiquidation(liquidation._id)}>Show Items</button>
                                             </div>
                                         </div>
-                                        {selectedLiq === liquidation._id && (
+                                        {showItemsLiqId === liquidation._id && (
                                             isLoading ? (
                                                 <Spinner /> // Show spinner while loading
                                             ) : (
