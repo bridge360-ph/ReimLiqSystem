@@ -1,6 +1,7 @@
 // AddReimItem.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import InputForm from './InputForm';
 
 const AddReimItem = ({ reimbursementId, onClose }) => {
     const [item, setItem] = useState('');
@@ -49,13 +50,31 @@ const AddReimItem = ({ reimbursementId, onClose }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="item">Item:</label>
-                    <input type="text" id="item" value={item} onChange={handleItemChange} />
-                    <label htmlFor="quantity">Quantity:</label>
-                    <input type="number" id="quantity" value={quantity} onChange={handleQuantityChange} />
-                    <label htmlFor="price">Price:</label>
-                    <input type="number" id="price" value={price} onChange={handlePriceChange} />
+                <form onSubmit={handleSubmit} className='formcont'>
+                    <InputForm
+                        htmlFor="item"
+                        labelText="Item: "
+                        type="text"
+                        value={item}
+                        handleChange={handleItemChange}
+                        placeholder="Enter item"
+                    />
+                    <InputForm
+                        htmlFor="quantity"
+                        labelText="Quantity: "
+                        type="number"
+                        value={quantity}
+                        handleChange={handleQuantityChange}
+                        placeholder="Enter quantity"
+                    />
+                    <InputForm
+                        htmlFor="price"
+                        labelText="Price: "
+                        type="number"
+                        value={price}
+                        handleChange={handlePriceChange}
+                        placeholder="Enter price"
+                    />
                     <button type="submit">Add Item</button>
                 </form>
             </div>

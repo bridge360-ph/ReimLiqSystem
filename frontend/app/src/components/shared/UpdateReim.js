@@ -48,7 +48,7 @@ const UpdateReim = ({ isOpen, onClose, selectedReimbursement }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='formcont'>
                     <InputForm
                         htmlFor="name"
                         labelText="Name"

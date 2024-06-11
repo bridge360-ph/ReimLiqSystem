@@ -47,10 +47,10 @@ const UpdateReimItem = ({ isOpen, onClose, selectedItem }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='formcont'>
                     <InputForm
                         htmlFor="item"
-                        labelText="Item"
+                        labelText="Item:"
                         type="text"
                         name="item"
                         value={updatedItem.item}
@@ -59,7 +59,7 @@ const UpdateReimItem = ({ isOpen, onClose, selectedItem }) => {
                     />
                     <InputForm
                         htmlFor="price"
-                        labelText="Price"
+                        labelText="Price:"
                         type="number"
                         name="price"
                         value={updatedItem.price}
@@ -68,7 +68,7 @@ const UpdateReimItem = ({ isOpen, onClose, selectedItem }) => {
                     />
                     <InputForm
                         htmlFor="quantity"
-                        labelText="Quantity"
+                        labelText="Quantity:"
                         type="number"
                         name="quantity"
                         value={updatedItem.quantity}
