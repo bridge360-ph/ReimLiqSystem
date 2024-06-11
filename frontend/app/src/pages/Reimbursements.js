@@ -5,6 +5,7 @@ import UpdateReim from '../components/shared/UpdateReim.js';
 import AddReimItem from '../components/shared/AddReimItem.js';
 import UpdateReimItem from '../components/shared/UpdateReimItem.js';
 import '../styles/reim.css';
+import Spinner from '../components/shared/Spinner.js';
 
 const Reimbursements = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +23,7 @@ const Reimbursements = () => {
     const [status, setStatus] = useState('pending');
     const [filteredReimbursements, setFilteredReimbursements] = useState([]);
     const [showItemsReimbursementId, setShowItemsReimbursementId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetchReimbursements();
@@ -66,6 +68,7 @@ const Reimbursements = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            setIsLoading(true);
             if (response.data.success) {
                 const paid = response.data.reimbursements.filter(reim => reim.paystatus == 'paid');
                 const unpaid = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid');
@@ -74,9 +77,11 @@ const Reimbursements = () => {
                 setPaidReimbursements(paid);
                 setUnpaidReimbursements(unpaid);
                 filterReimbursements();
+                setIsLoading(false)
             } else {
                 console.error('Failed to fetch reimbursements');
                 setError('Failed to fetch reimbursements');
+                setIsLoading(false)
             }
         } catch (error) {
             console.error('Error fetching reimbursements:', error);
@@ -108,16 +113,20 @@ const Reimbursements = () => {
     const fetchReimbursementItems = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
+            setIsLoading(true)
             const response = await axios.get(`/api/v1/reim/get-reim-items/${reimbursementId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
             if (response.data.success) {
                 setReimbursementItems(response.data.items);
+                setIsLoading(false)
             } else {
                 console.error(`Failed to fetch items for reimbursement ${reimbursementId}`);
                 setError(`Failed to fetch items for reimbursement ${reimbursementId}`);
+                setIsLoading(false)
             }
         } catch (error) {
             console.error(`Error fetching items for reimbursement ${reimbursementId}:`, error);
@@ -181,215 +190,219 @@ const Reimbursements = () => {
     };
 
 
-    return (
-        <div className='reimpage'>
-            <h1 className='settings-header'>Reimbursements</h1>
-            <AddReim isOpen={isModalOpen} onClose={closeModal} />
-            <UpdateReim
-                isOpen={isUpdateModalOpen}
-                onClose={closeUpdateModal}
-                selectedReimbursement={selectedReimbursement}
-            />
-            {isAddItemModalOpen && (
-                <AddReimItem
-                    reimbursementId={selectedReimbursementId}
-                    onClose={closeAddItemModal}
+    return (<>
+        {isLoading ? <Spinner /> : (
+            <div className='reimpage'>
+                <h1 className='settings-header'>Reimbursements</h1>
+                <AddReim isOpen={isModalOpen} onClose={closeModal} />
+                <UpdateReim
+                    isOpen={isUpdateModalOpen}
+                    onClose={closeUpdateModal}
+                    selectedReimbursement={selectedReimbursement}
                 />
-            )}
-            <UpdateReimItem
-                isOpen={isUpdateItemModalOpen}
-                onClose={closeUpdateItemModal}
-                selectedItem={reimbursementItems.find(item => item._id === selectedItemId)}
-            />
-            <div className='reimpagecont'>
-                <button onClick={openModal} className='add-reim'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                    </svg>
-                    Add Reimbursement
-                </button>
-                <div className='flexy'>
-                    <h2>Your Reimbursements</h2>
-                    <div className='filt'>
-                        <label htmlFor="status">Filter by Status: </label>
-                        <select id="status" value={status} onChange={handleStatusChange}>
-                            <option value="pending">Pending</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
+                {isAddItemModalOpen && (
+                    <AddReimItem
+                        reimbursementId={selectedReimbursementId}
+                        onClose={closeAddItemModal}
+                    />
+                )}
+                <UpdateReimItem
+                    isOpen={isUpdateItemModalOpen}
+                    onClose={closeUpdateItemModal}
+                    selectedItem={reimbursementItems.find(item => item._id === selectedItemId)}
+                />
+                <div className='reimpagecont'>
+                    <button onClick={openModal} className='add-reim'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                        Add Reimbursement
+                    </button>
+                    <div className='flexy'>
+                        <h2>Your Reimbursements</h2>
+                        <div className='filt'>
+                            <label htmlFor="status">Filter by Status: </label>
+                            <select id="status" value={status} onChange={handleStatusChange}>
+                                <option value="pending">Pending</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className='reim-card'>
-                    {filteredReimbursements.length > 0 ? (
-                        filteredReimbursements.map(reimbursement => (
-                            <div key={reimbursement._id} className='reimindiv'>
-                                <div className='flexy'>
-                                    <div className='reim-info'>
-                                        <p>Name: {reimbursement.name}</p>
-                                        <p>Description: {reimbursement.description} </p>
-                                        <p>Total Price: Php {reimbursement.total_price}</p>
-                                        <p>Date Submitted: {formatDate(reimbursement.submission_date)}</p>
-                                        {reimbursement.status === 'accepted' && (
+                    <div className='reim-card'>
+                        {filteredReimbursements.length > 0 ? (
+                            filteredReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <p>Name: {reimbursement.name}</p>
+                                            <p>Description: {reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Date Submitted: {formatDate(reimbursement.submission_date)}</p>
+                                            {reimbursement.status === 'accepted' && (
+                                                <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                            )}
+
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                            <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
+                                            <button onClick={(e) => openAddItemModal(reimbursement._id, e)}>Add Item</button>
+                                            <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
+                                        </div>
+                                    </div>
+                                    {showItemsReimbursementId === reimbursement._id && (
+                                        isLoading ? (
+                                            <Spinner /> // Show spinner while loading
+                                        ) : (
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Item</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>Total Price</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {reimbursementItems.map(item => (
+                                                        <tr key={item._id}>
+                                                            <td className="item-column">{item.item}</td>
+                                                            <td>{item.price}</td>
+                                                            <td>{item.quantity}</td>
+                                                            <td>{item.total_price}</td>
+                                                            <td>
+                                                                <div className='reim-butts card-butts'>
+                                                                    <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
+                                                                    <button onClick={() => handleUpdateItem(item._id)}>Update</button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>No reimbursements found.</p>
+                        )}
+                    </div>
+
+                    <div className='flexy'>
+                        <h2>Paid Reimbursements</h2>
+                    </div>
+
+                    <div className='reim-card'>
+
+                        {paidReimbursements.length > 0 ? (
+                            paidReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <p>Name: {reimbursement.name}</p>
+                                            <p>Description: {reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Approved by: {reimbursement.comments}</p>
                                             <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
-                                        )}
+                                            <p>Payment Date : {formatDate(reimbursement.payment_date)}</p>
 
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                            <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
+                                        </div>
                                     </div>
-                                    <div className='reim-butts'>
-                                        <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
-                                        <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
-                                        <button onClick={(e) => openAddItemModal(reimbursement._id, e)}>Add Item</button>
-                                        <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
-                                    </div>
-                                </div>
-                                {showItemsReimbursementId === reimbursement._id && (
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Item</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total Price</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {reimbursementItems.map(item => (
-                                                <tr key={item._id}>
-                                                    <td className="item-column">{item.item}</td>
-                                                    <td>{item.price}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.total_price}</td>
-                                                    <td>
-                                                        <div className='reim-butts card-butts'>
-                                                            <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
-                                                            <button onClick={() => handleUpdateItem(item._id)}>Update</button>
-                                                        </div>
-
-                                                    </td>
+                                    {showItemsReimbursementId === reimbursement._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p>No reimbursements found.</p>
-                    )}
-                </div>
+                                            </thead>
+                                            <tbody>
+                                                {reimbursementItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
 
-                <div className='flexy'>
-                    <h2>Paid Reimbursements</h2>
-                </div>
 
-                <div className='reim-card'>
-
-                    {paidReimbursements.length > 0 ? (
-                        paidReimbursements.map(reimbursement => (
-                            <div key={reimbursement._id} className='reimindiv'>
-                                <div className='flexy'>
-                                    <div className='reim-info'>
-                                        <p>Name: {reimbursement.name}</p>
-                                        <p>Description: {reimbursement.description} </p>
-                                        <p>Total Price: Php {reimbursement.total_price}</p>
-                                        <p>Approved by: {reimbursement.comments}</p>
-                                        <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
-                                        <p>Payment Date : {formatDate(reimbursement.payment_date)}</p>
-
-                                    </div>
-                                    <div className='reim-butts'>
-                                        <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
-                                        <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
-                                    </div>
                                 </div>
-                                {showItemsReimbursementId === reimbursement._id && (
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Item</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {reimbursementItems.map(item => (
-                                                <tr key={item._id}>
-                                                    <td className="item-column">{item.item}</td>
-                                                    <td>{item.price}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.total_price}</td>
+                            ))
+                        ) : (
+                            <p>No paid reimbursements yet</p>
+                        )}
+                    </div>
+                    <div className='flexy'>
+                        <h2>Unpaid Reimbursements</h2>
+                    </div>
+
+                    <div className='reim-card'>
+                        {unpaidReimbursements.length > 0 ? (
+                            unpaidReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <p>Name: {reimbursement.name}</p>
+                                            <p>Description: {reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            {reimbursement.status === 'accepted' && (<>
+                                                <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                                <p>Approved by: {reimbursement.comments}</p></>
+                                            )}
+
+
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
+                                            <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
+                                        </div>
+                                    </div>
+                                    {showItemsReimbursementId === reimbursement._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-
-
-                            </div>
-                        ))
-                    ) : (
-                        <p>No paid reimbursements yet</p>
-                    )}
-                </div>
-                <div className='flexy'>
-                    <h2>Unpaid Reimbursements</h2>
-                </div>
-
-                <div className='reim-card'>
-                    {unpaidReimbursements.length > 0 ? (
-                        unpaidReimbursements.map(reimbursement => (
-                            <div key={reimbursement._id} className='reimindiv'>
-                                <div className='flexy'>
-                                    <div className='reim-info'>
-                                        <p>Name: {reimbursement.name}</p>
-                                        <p>Description: {reimbursement.description} </p>
-                                        <p>Total Price: Php {reimbursement.total_price}</p>
-                                        {reimbursement.status === 'accepted' && (<>
-                                            <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
-                                            <p>Approved by: {reimbursement.comments}</p></>
-                                        )}
-
-
-                                    </div>
-                                    <div className='reim-butts'>
-                                        <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
-                                        <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
-                                    </div>
+                                            </thead>
+                                            <tbody>
+                                                {reimbursementItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
                                 </div>
-                                {showItemsReimbursementId === reimbursement._id && (
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Item</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total Price</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {reimbursementItems.map(item => (
-                                                <tr key={item._id}>
-                                                    <td className="item-column">{item.item}</td>
-                                                    <td>{item.price}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.total_price}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p>No unpaid reimbursements yet</p>
-                    )}
-                </div>
+                            ))
+                        ) : (
+                            <p>No unpaid reimbursements yet</p>
+                        )}
+                    </div>
 
-            </div>
-        </div>
-    );
+                </div>
+            </div>)}
+    </>);
 };
 
 export default Reimbursements;

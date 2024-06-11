@@ -55,10 +55,10 @@ const AddLiq = ({ isOpen, onClose }) => {
         <div className="modal-overlay">
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='formcont'>
                     <InputForm
                         htmlFor="name"
-                        labelText="Name"
+                        labelText="Name: "
                         type="text"
                         value={name}
                         handleChange={handleNameChange}
@@ -66,7 +66,7 @@ const AddLiq = ({ isOpen, onClose }) => {
                     />
                     <InputForm
                         htmlFor="description"
-                        labelText="Description"
+                        labelText="Description: "
                         type="text"
                         value={description}
                         handleChange={handleDescriptionChange}
@@ -74,7 +74,7 @@ const AddLiq = ({ isOpen, onClose }) => {
                     />
                     <InputForm
                         htmlFor="amount"
-                        labelText="Initial Amount"
+                        labelText="Initial Amount: "
                         type="text"
                         value={initial_amount}
                         handleChange={handleAmountChange}
