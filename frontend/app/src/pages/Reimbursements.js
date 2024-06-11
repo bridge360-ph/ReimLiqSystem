@@ -4,7 +4,7 @@ import AddReim from '../components/shared/AddReim.js';
 import UpdateReim from '../components/shared/UpdateReim.js';
 import AddReimItem from '../components/shared/AddReimItem.js';
 import UpdateReimItem from '../components/shared/UpdateReimItem.js';
-import '../styles/reim.css'
+import '../styles/reim.css';
 
 const Reimbursements = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +21,7 @@ const Reimbursements = () => {
     const [selectedItemId, setSelectedItemId] = useState(null);
     const [status, setStatus] = useState('pending');
     const [filteredReimbursements, setFilteredReimbursements] = useState([]);
+    const [showItemsReimbursementId, setShowItemsReimbursementId] = useState(null);
 
     useEffect(() => {
         fetchReimbursements();
@@ -30,28 +31,20 @@ const Reimbursements = () => {
         filterReimbursements();
     }, [reimbursements, status]);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleStatusChange = (e) => {
-        setStatus(e.target.value);
-    };
+    const handleStatusChange = (e) => setStatus(e.target.value);
 
     const openUpdateModal = (reimbursement) => {
         setSelectedReimbursement(reimbursement);
         setIsUpdateModalOpen(true);
     };
 
-    const closeUpdateModal = () => {
-        setIsUpdateModalOpen(false);
-    };
+    const closeUpdateModal = () => setIsUpdateModalOpen(false);
 
-    const openAddItemModal = (reimbursementId) => {
+    const openAddItemModal = (reimbursementId, e) => {
+        e.stopPropagation();
         setSelectedReimbursementId(reimbursementId);
         setIsAddItemModalOpen(true);
     };
@@ -61,31 +54,25 @@ const Reimbursements = () => {
         setIsUpdateItemModalOpen(true);
     };
 
-    const closeUpdateItemModal = () => {
-        setIsUpdateItemModalOpen(false);
-    };
+    const closeUpdateItemModal = () => setIsUpdateItemModalOpen(false);
 
-    const closeAddItemModal = () => {
-        setIsAddItemModalOpen(false);
-    };
+    const closeAddItemModal = () => setIsAddItemModalOpen(false);
 
     const fetchReimbursements = async () => {
         const token = localStorage.getItem('token');
-
         try {
             const response = await axios.get('/api/v1/reim/get-created-reim', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (response.data.success) {
                 const paid = response.data.reimbursements.filter(reim => reim.status === 'paid');
                 const unpaid = response.data.reimbursements.filter(reim => reim.status !== 'paid');
                 setReimbursements(response.data.reimbursements);
                 setPaidReimbursements(paid);
                 setUnpaidReimbursements(unpaid);
-                filterReimbursements(); // Call filter function initially
+                filterReimbursements();
             } else {
                 console.error('Failed to fetch reimbursements');
                 setError('Failed to fetch reimbursements');
@@ -106,12 +93,13 @@ const Reimbursements = () => {
         }
     };
 
-    const fetchItemsForReimbursement = (reimbursementId) => {
-        if (selectedReimbursementId === reimbursementId) {
-            setSelectedReimbursementId(null);
+    const fetchItemsForReimbursement = (reimbursementId, e) => {
+        e.stopPropagation();
+        if (showItemsReimbursementId === reimbursementId) {
+            setShowItemsReimbursementId(null);
             setReimbursementItems([]);
         } else {
-            setSelectedReimbursementId(reimbursementId);
+            setShowItemsReimbursementId(reimbursementId);
             fetchReimbursementItems(reimbursementId);
         }
     };
@@ -124,7 +112,6 @@ const Reimbursements = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (response.data.success) {
                 setReimbursementItems(response.data.items);
             } else {
@@ -139,14 +126,12 @@ const Reimbursements = () => {
 
     const handleDelete = async (id) => {
         const token = localStorage.getItem('token');
-
         try {
             const response = await axios.delete(`/api/v1/reim/del-reim/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (response.data.success) {
                 setReimbursements(reimbursements.filter(reimbursement => reimbursement._id !== id));
                 setPaidReimbursements(paidReimbursements.filter(reimbursement => reimbursement._id !== id));
@@ -163,14 +148,12 @@ const Reimbursements = () => {
 
     const handleDeleteItem = async (itemId) => {
         const token = localStorage.getItem('token');
-
         try {
             const response = await axios.delete(`/api/v1/reim/del-reim-item/${itemId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (response.data.success) {
                 setReimbursementItems(reimbursementItems.filter(item => item._id !== itemId));
             } else {
@@ -208,14 +191,14 @@ const Reimbursements = () => {
                 onClose={closeUpdateItemModal}
                 selectedItem={reimbursementItems.find(item => item._id === selectedItemId)}
             />
-
             <div className='reimpagecont'>
-
-                <button onClick={openModal} className='add-reim'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                </svg>Add Reimbursement</button>
-
+                <button onClick={openModal} className='add-reim'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                    </svg>
+                    Add Reimbursement
+                </button>
                 <div className='flexy'>
                     <h2>Your Reimbursements</h2>
                     <div className='filt'>
@@ -226,9 +209,7 @@ const Reimbursements = () => {
                             <option value="rejected">Rejected</option>
                         </select>
                     </div>
-
                 </div>
-
                 <div className='reim-card'>
                     {filteredReimbursements.length > 0 ? (
                         filteredReimbursements.map(reimbursement => (
@@ -242,11 +223,11 @@ const Reimbursements = () => {
                                     <div className='reim-butts'>
                                         <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
                                         <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
-                                        <button onClick={() => openAddItemModal(reimbursement._id)}>Add Item</button>
-                                        <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
+                                        <button onClick={(e) => openAddItemModal(reimbursement._id, e)}>Add Item</button>
+                                        <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
                                     </div>
                                 </div>
-                                {selectedReimbursementId === reimbursement._id && (
+                                {showItemsReimbursementId === reimbursement._id && (
                                     <table>
                                         <thead>
                                             <tr>
@@ -260,13 +241,16 @@ const Reimbursements = () => {
                                         <tbody>
                                             {reimbursementItems.map(item => (
                                                 <tr key={item._id}>
-                                                    <td>{item.item}</td>
+                                                    <td className="item-column">{item.item}</td>
                                                     <td>{item.price}</td>
                                                     <td>{item.quantity}</td>
                                                     <td>{item.total_price}</td>
                                                     <td>
-                                                        <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
-                                                        <button onClick={() => handleUpdateItem(item._id)}>Update</button>
+                                                        <div className='reim-butts card-butts'>
+                                                            <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
+                                                            <button onClick={() => handleUpdateItem(item._id)}>Update</button>
+                                                        </div>
+
                                                     </td>
                                                 </tr>
                                             ))}
@@ -288,7 +272,6 @@ const Reimbursements = () => {
                                 {reimbursement.total_price}
                                 <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
                                 <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
-
                             </li>
                         ))
                     ) : (
@@ -304,7 +287,6 @@ const Reimbursements = () => {
                                 {reimbursement.total_price}
                                 <button onClick={() => handleDelete(reimbursement._id)}>Delete</button>
                                 <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
-
                             </li>
                         ))
                     ) : (

@@ -13,7 +13,6 @@
     color: white;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     font-family: "Inter", sans-serif;
-    color: white;
     font-weight: 300;
     gap: .5em;
     font-size: 1em;
@@ -73,10 +72,41 @@
     gap: 5px;
 }
 
+.card-butts {
+    justify-content: center;
+}
+
 .reim-butts button {
     display: flex;
     background-color: white;
     padding: .5em;
     border: none;
     border-radius: 5px;
+}
+
+table {
+    border: 1px solid white;
+    padding: 1em;
+    margin: 1em 0em;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    border: 1px solid white;
+    padding: 0.5em;
+}
+
+table thead th {
+    background-color: #f2f2f2;
+    color: #0072ce;
+}
+
+table tbody {
+    text-align: center;
+}
+
+table tbody .item-column {
+    text-align: left;
 }
