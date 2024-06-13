@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Spinner from '../components/shared/Spinner.js';
 
 const ManageLiq = () => {
-    const [pendingLiquidations,setPendingLiquidations] = useState([])
-    const [acceptedLiquidations,setacceptedLiquidations] = useState([])
-    const [rejectedLiquidations,setrejectedLiquidations] = useState([])
-    const [unreturnedLiquidations,setunreturnedLiquidations] = useState([])
-    const [returnedLiquidations,setreturnedLiquidations] = useState([])
+    const [pendingLiquidations, setPendingLiquidations] = useState([])
+    const [acceptedLiquidations, setacceptedLiquidations] = useState([])
+    const [rejectedLiquidations, setrejectedLiquidations] = useState([])
+    const [unreturnedLiquidations, setunreturnedLiquidations] = useState([])
+    const [returnedLiquidations, setreturnedLiquidations] = useState([])
     const [error, setError] = useState(null);
     const [selectedLiquidationId, setselectedLiquidationId] = useState(null);
     const [liquidationItems, setliquidationItems] = useState([]);
     const [fullname, setFullname] = useState('');
-
-    useEffect (()=>{
+    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
         fetchUserDetails();
-    },[])
+    }, [])
 
     const fetchUserDetails = async () => {
         const token = localStorage.getItem('token');
@@ -56,9 +57,8 @@ const ManageLiq = () => {
                 const pending = response.data.liquidations.filter(liq => liq.status === 'pending');
                 const approved = response.data.liquidations.filter(liq => liq.status === 'accepted' && liq.comments === fullname);
                 const rejected = response.data.liquidations.filter(liq => liq.status === 'rejected' && liq.comments === fullname);
-                const unpaid = approved.filter(liq => liq.paystatus === 'unreturned');
+                const unpaid = approved.filter(liq => liq.paystatus === 'unreturned' && liq.status === 'accepted');
                 const paid = approved.filter(liq => liq.paystatus === 'returned');
-                
                 setPendingLiquidations(pending);
                 setacceptedLiquidations(approved);
                 setrejectedLiquidations(rejected);
@@ -108,7 +108,7 @@ const ManageLiq = () => {
     const acceptLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/accept-liq', 
+            const response = await axios.post('http://localhost:8080/api/v1/process/accept-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {
@@ -133,7 +133,7 @@ const ManageLiq = () => {
     const rejectLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/reject-liq', 
+            const response = await axios.post('http://localhost:8080/api/v1/process/reject-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {
@@ -158,7 +158,7 @@ const ManageLiq = () => {
     const returnLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('/api/v1/process/return-liq', 
+            const response = await axios.post('/api/v1/process/return-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {
@@ -183,115 +183,230 @@ const ManageLiq = () => {
 
 
     return (
-        <div className='reim-container'>
-            <div>Manage Liquidations</div>
-            {error && <div className="error">{error}</div>}
-            
-            <h2>Pending Liquidations</h2>
-            {pendingLiquidations.map(liquidation => (
-                <div key={liquidation._id} className='reims'>
-                    {liquidation.name} {liquidation.description} {liquidation.total_price}
-                    <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
-                    <button onClick={() => acceptLiq(liquidation._id)}>Accept Liquidation</button>
-                    <button onClick={() => rejectLiq(liquidation._id)}>Reject Liquidation</button>
-                    {selectedLiquidationId === liquidation._id && (
-                        <div>
-                            {liquidationItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+        <>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <div className='reimpage'>
+                    <h1 className='settings-header'>Manage Liquidations</h1>
+                    <div className='reimpagecont'>
+                        <div className='flexy'>
+                            <h2>Pending Liquidations</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {pendingLiquidations.map(liquidation => (
+                                <div key={liquidation._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{liquidation.name}</h3>
+                                            <p>{liquidation.description} </p>
+                                            <p>Total Price: Php {liquidation.total_price}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
+                                            <button onClick={() => acceptLiq(liquidation._id)}>Accept Liquidation</button>
+                                            <button onClick={() => rejectLiq(liquidation._id)}>Reject Liquidation</button>
+                                        </div>
+                                    </div>
+                                    {selectedLiquidationId === liquidation._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {liquidationItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Approved Liquidations</h2>
-            {acceptedLiquidations.map(liquidation => (
-                <div key={liquidation._id} className='reims'>
-                    {liquidation.name} {liquidation.description} {liquidation.total_price}
-                    <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
-                    {selectedLiquidationId === liquidation._id && (
-                        <div>
-                            {liquidationItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Rejected Liquidations</h2>
-            {rejectedLiquidations.map(liquidation => (
-                <div key={liquidation._id} className='reims'>
-                    {liquidation.name} {liquidation.description} {liquidation.total_price}
-                    <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
-                    {selectedLiquidationId === liquidation._id && (
-                        <div>
-                            {liquidationItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            ))}
- <h2>Unreturned Reimbursements (Approved Only)</h2>
-            {unreturnedLiquidations.map(liquidation => (
-                <div key={liquidation._id} className='reims'>
-                    {liquidation.name} {liquidation.description} {liquidation.total_price}
-                    <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
-                    <button onClick={() => returnLiq(liquidation._id)}>Return Liquidation</button>
-                    {selectedLiquidationId === liquidation._id && (
-                        <div>
-                            {liquidationItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Returned Reimbursements (Approved Only)</h2>
-            {returnedLiquidations.map(liquidation => (
-                <div key={liquidation._id} className='reims'>
-                    {liquidation.name} {liquidation.description} {liquidation.total_price}
-                    
-                    {selectedLiquidationId === liquidation._id && (
-                        <div>
-                            {liquidationItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            ))}
 
+                        <div className='flexy'>
+                            <h2>Approved Liquidations</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {acceptedLiquidations.map(liquidation => (
+                                <div key={liquidation._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{liquidation.name}</h3>
+                                            <p>{liquidation.description} </p>
+                                            <p>Total Price: Php {liquidation.total_price}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
+                                            <button onClick={() => returnLiq(liquidation._id)}>Return Liquidation</button>
+                                        </div>
+                                    </div>
+                                    {selectedLiquidationId === liquidation._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {liquidationItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
 
-        </div>
-    )
+                        <div className='flexy'>
+                            <h2>Rejected Liquidations</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {rejectedLiquidations.map(liquidation => (
+                                <div key={liquidation._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{liquidation.name}</h3>
+                                            <p>{liquidation.description} </p>
+                                            <p>Total Price: Php {liquidation.total_price}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
+                                            <button onClick={() => acceptLiq(liquidation._id)}>Accept Liquidation</button>
+                                        </div>
+                                    </div>
+                                    {selectedLiquidationId === liquidation._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {liquidationItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className='flexy'>
+                            <h2>Unreturned Liquidations</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {unreturnedLiquidations.map(liquidation => (
+                                <div key={liquidation._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{liquidation.name}</h3>
+                                            <p>{liquidation.description} </p>
+                                            <p>Total Price: Php {liquidation.total_price}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
+                                            <button onClick={() => returnLiq(liquidation._id)}>Return Liquidation</button>
+                                        </div>
+                                    </div>
+                                    {selectedLiquidationId === liquidation._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {liquidationItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className='flexy'>
+                            <h2>Returned Liquidations</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {returnedLiquidations.map(liquidation => (
+                                <div key={liquidation._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{liquidation.name}</h3>
+                                            <p>{liquidation.description} </p>
+                                            <p>Total Price: Php {liquidation.total_price}</p>
+                                        </div>
+                                    </div>
+                                    {selectedLiquidationId === liquidation._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {liquidationItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+
 }
 
 export default ManageLiq

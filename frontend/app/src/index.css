@@ -5,6 +5,14 @@
   padding: 0;
 }
 
+.try {
+  flex-wrap: wrap;
+}
+
+.reim-item h3 {
+  font-weight: 800;
+}
+
 .low-menu {
   display: flex;
   font-family: "Inter", sans-serif;

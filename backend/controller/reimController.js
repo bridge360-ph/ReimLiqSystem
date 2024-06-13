@@ -367,6 +367,10 @@ export const getAllItems = async (req, res, next) => {
 export const getAllReim = async (req, res, next) => {
   try {
     const userId = req.user.userId;
+    const { page = 1, limit = 5 } = req.query; // Default limit to 5 items per page
+
+    // Calculate the offset based on the page number and limit
+    const offset = (page - 1) * limit;
 
     // Retrieve all reimbursements from the database
     const allReimbursements = await Reimbursement.find();
@@ -376,9 +380,12 @@ export const getAllReim = async (req, res, next) => {
       reimbursement => reimbursement.created_by.toString() !== userId
     );
 
+    // Paginate the filtered reimbursements
+    const paginatedReimbursements = filteredReimbursements.slice(offset, offset + limit);
+
     res.status(200).json({
       success: true,
-      reimbursements: filteredReimbursements,
+      reimbursements: paginatedReimbursements,
     });
   } catch (error) {
     next(error);

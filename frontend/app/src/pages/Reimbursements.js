@@ -71,9 +71,8 @@ const Reimbursements = () => {
             setIsLoading(true);
             if (response.data.success) {
                 const paid = response.data.reimbursements.filter(reim => reim.paystatus == 'paid');
-                const unpaid = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid');
+                const unpaid = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid' && reim.status == 'accepted');
                 setReimbursements(response.data.reimbursements);
-                console.log(unpaid)
                 setPaidReimbursements(paid);
                 setUnpaidReimbursements(unpaid);
                 filterReimbursements();
@@ -236,8 +235,8 @@ const Reimbursements = () => {
                                 <div key={reimbursement._id} className='reimindiv'>
                                     <div className='flexy'>
                                         <div className='reim-info'>
-                                            <p>Name: {reimbursement.name}</p>
-                                            <p>Description: {reimbursement.description} </p>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
                                             <p>Total Price: Php {reimbursement.total_price}</p>
                                             <p>Date Submitted: {formatDate(reimbursement.submission_date)}</p>
                                             {reimbursement.status === 'accepted' && (
@@ -303,8 +302,8 @@ const Reimbursements = () => {
                                 <div key={reimbursement._id} className='reimindiv'>
                                     <div className='flexy'>
                                         <div className='reim-info'>
-                                            <p>Name: {reimbursement.name}</p>
-                                            <p>Description: {reimbursement.description} </p>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
                                             <p>Total Price: Php {reimbursement.total_price}</p>
                                             <p>Approved by: {reimbursement.comments}</p>
                                             <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
@@ -351,13 +350,13 @@ const Reimbursements = () => {
                     </div>
 
                     <div className='reim-card'>
-                        {unpaidReimbursements.length > 0 ? (
+                        {unpaidReimbursements.filter(reimbursement => reimbursement.status === 'accepted').length > 0 ? (
                             unpaidReimbursements.map(reimbursement => (
                                 <div key={reimbursement._id} className='reimindiv'>
                                     <div className='flexy'>
                                         <div className='reim-info'>
-                                            <p>Name: {reimbursement.name}</p>
-                                            <p>Description: {reimbursement.description} </p>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
                                             <p>Total Price: Php {reimbursement.total_price}</p>
                                             {reimbursement.status === 'accepted' && (<>
                                                 <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
@@ -396,7 +395,7 @@ const Reimbursements = () => {
                                 </div>
                             ))
                         ) : (
-                            <p>No unpaid reimbursements yet</p>
+                            <p>No unpaid reimbursements yet or Reimbursements are not accepted Yet</p>
                         )}
                     </div>
 

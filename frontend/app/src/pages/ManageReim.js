@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Spinner from '../components/shared/Spinner';
 
 const ManageReim = () => {
     const [pendingReimbursements, setPendingReimbursements] = useState([]);
@@ -11,6 +12,7 @@ const ManageReim = () => {
     const [selectedReimbursementId, setSelectedReimbursementId] = useState(null);
     const [reimbursementItems, setReimbursementItems] = useState([]);
     const [fullname, setFullname] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchUserDetails();
@@ -58,7 +60,7 @@ const ManageReim = () => {
                 const rejected = response.data.reimbursements.filter(reim => reim.status === 'rejected' && reim.comments === fullname);
                 const unpaid = approved.filter(reim => reim.paystatus === 'unpaid');
                 const paid = approved.filter(reim => reim.paystatus === 'paid');
-                
+
                 setPendingReimbursements(pending);
                 setApprovedReimbursements(approved);
                 setRejectedReimbursements(rejected);
@@ -108,7 +110,7 @@ const ManageReim = () => {
     const acceptReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/accept-reim', 
+            const response = await axios.post('http://localhost:8080/api/v1/process/accept-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {
@@ -133,7 +135,7 @@ const ManageReim = () => {
     const rejectReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/reject-reim', 
+            const response = await axios.post('http://localhost:8080/api/v1/process/reject-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {
@@ -158,7 +160,7 @@ const ManageReim = () => {
     const payReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('/api/v1/process/pay-reim', 
+            const response = await axios.post('/api/v1/process/pay-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {
@@ -179,118 +181,204 @@ const ManageReim = () => {
             setError(`Error paying reimbursement ${reimbursementId}: ${error.message}`);
         }
     };
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     return (
-        <div className='reim-container'>
-            <div>Manage Reimbursements</div>
-            {error && <div className="error">{error}</div>}
-            
-            <h2>Pending Reimbursements</h2>
-            {pendingReimbursements.map(reimbursement => (
-                <div key={reimbursement._id} className='reims'>
-                    {reimbursement.name} {reimbursement.description} {reimbursement.total_price}
-                    <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                    <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
-                    <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
-                    {selectedReimbursementId === reimbursement._id && (
-                        <div>
-                            {reimbursementItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+        <>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <div className='reimpage'>
+                    <h1 className='settings-header'>Manage Reimbursements</h1>
+                    <div className='reimpagecont'>
+                        <div className='flexy'>
+                            <h2>Pending Reimbursements</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {pendingReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Date Submitted: {formatDate(reimbursement.submission_date)}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
+                                            <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
+                                            <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
+                                        </div>
+                                    </div>
+                                    {selectedReimbursementId === reimbursement._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {reimbursementItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Approved Reimbursements</h2>
-            {approvedReimbursements.map(reimbursement => (
-                <div key={reimbursement._id} className='reims'>
-                    {reimbursement.name} {reimbursement.description} {reimbursement.total_price}
-                    <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                    <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
-                    {selectedReimbursementId === reimbursement._id && (
-                        <div>
-                            {reimbursementItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+
+                        <div className='flexy'>
+                            <h2>Approved Reimbursements</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {approvedReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
+                                            <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
+                                        </div>
+                                    </div>
+                                    {selectedReimbursementId === reimbursement._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {reimbursementItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Rejected Reimbursements</h2>
-            {rejectedReimbursements.map(reimbursement => (
-                <div key={reimbursement._id} className='reims'>
-                    {reimbursement.name} {reimbursement.description} {reimbursement.total_price}
-                    <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                    <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
-                    {selectedReimbursementId === reimbursement._id && (
-                        <div>
-                            {reimbursementItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+
+                        <div className='flexy'>
+                            <h2>Rejected Reimbursements</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {rejectedReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+                                            <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
+                                            <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
+                                        </div>
+                                    </div>
+                                    {selectedReimbursementId === reimbursement._id && (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {reimbursementItems.map(item => (
+                                                    <tr key={item._id}>
+                                                        <td className="item-column">{item.item}</td>
+                                                        <td>{item.price}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.total_price}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Unpaid Reimbursements (Approved Only)</h2>
-            {unpaidReimbursements.map(reimbursement => (
-                <div key={reimbursement._id} className='reims'>
-                    {reimbursement.name} {reimbursement.description} {reimbursement.total_price}
-                    <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                    <button onClick={() => payReimbursement(reimbursement._id)}>Pay Reimbursement</button>
-                    {selectedReimbursementId === reimbursement._id && (
-                        <div>
-                            {reimbursementItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+
+                        <div className='flexy'>
+                            <h2>Unpaid Reimbursements</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {unpaidReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                            <p>Approved by: {reimbursement.comments}</p>
+                                        </div>
+                                        <div className='reim-butts'>
+
+                                            <button onClick={() => payReimbursement(reimbursement._id)}>Pay Reimbursement</button>
+                                        </div>
+                                    </div>
+
+                                </div>
                             ))}
                         </div>
-                    )}
-                </div>
-            ))}
-    
-            <h2>Paid Reimbursements (Approved Only)</h2>
-            {paidReimbursements.map(reimbursement => (
-                <div key={reimbursement._id} className='reims'>
-                    {reimbursement.name} {reimbursement.description} {reimbursement.total_price}
-                    <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                    {selectedReimbursementId === reimbursement._id && (
-                        <div>
-                            {reimbursementItems.map(item => (
-                                <li key={item._id}>
-                                    Item: {item.item}<br />
-                                    Price: {item.price}<br />
-                                    Quantity: {item.quantity}<br />
-                                    Total Price: {item.total_price}
-                                </li>
+
+                        <div className='flexy'>
+                            <h2>Paid Reimbursements</h2>
+                        </div>
+                        <div className='reim-card'>
+                            {paidReimbursements.map(reimbursement => (
+                                <div key={reimbursement._id} className='reimindiv'>
+                                    <div className='flexy'>
+                                        <div className='reim-info'>
+                                            <h3>{reimbursement.name}</h3>
+                                            <p>{reimbursement.description} </p>
+                                            <p>Total Price: Php {reimbursement.total_price}</p>
+                                            <p>Approved by: {reimbursement.comments}</p>
+                                            <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
+                                            <p>Payment Date : {formatDate(reimbursement.payment_date)}</p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
                             ))}
                         </div>
-                    )}
+                    </div>
                 </div>
-            ))}
-            
-        </div>
+            )}
+        </>
     );
 };
 

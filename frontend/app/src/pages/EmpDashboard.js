@@ -53,8 +53,8 @@ const EmpDashboard = () => {
                         }
                     });
                     if (response.data.success) {
-                        const createdReims = response.data.reimbursements.filter(reim => reim.status !== 'paid');
-                        const paidReims = response.data.reimbursements.filter(reim => reim.status === 'paid');
+                        const createdReims = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid');
+                        const paidReims = response.data.reimbursements.filter(reim => reim.paystatus === 'paid');
                         setReimbursements(createdReims);
                         setPaidReimbursements(paidReims);
                     } else {
@@ -76,8 +76,8 @@ const EmpDashboard = () => {
                         }
                     });
                     if (response.data.success) {
-                        const createdLiqs = response.data.liquidations.filter(liq => liq.status !== 'returned');
-                        const returnedLiqs = response.data.liquidations.filter(liq => liq.status === 'returned');
+                        const createdLiqs = response.data.liquidations.filter(liq => liq.paystatus !== 'returned');
+                        const returnedLiqs = response.data.liquidations.filter(liq => liq.paystatus === 'returned');
                         setLiquidations(createdLiqs);
                         setReturnedLiquidations(returnedLiqs);
                     } else {
@@ -131,7 +131,7 @@ const EmpDashboard = () => {
                                     <div key={reim._id} className='reim-item'>
                                         <h3>{reim.name}</h3>
                                         <p>{reim.description}</p>
-                                        <p>Total Amount: {reim.total_amount}</p>
+                                        <p>Total Amount: {reim.total_price}</p>
                                         <p>Status: {reim.status}</p>
                                     </div>
                                 ))
@@ -172,7 +172,7 @@ const EmpDashboard = () => {
                                     <div key={liq._id} className='liq-item'>
                                         <h3>{liq.name}</h3>
                                         <p>{liq.description}</p>
-                                        <p>Total Amount: {liq.total_amount}</p>
+                                        <p>Total Amount: {liq.total_price}</p>
                                         <p>Status: {liq.status}</p>
                                     </div>
                                 ))

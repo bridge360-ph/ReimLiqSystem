@@ -22,6 +22,8 @@ const Liquidations = () => {
     const [filteredLiq, setFilteredLiq] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showItemsLiqId, setshowItemsLiqId] = useState(null);
+    const [isFiltering, setIsFiltering] = useState(false); // New state for filtering
+
 
     const openAddItemModal = (reimbursementId) => {
         setSelectedLiq(reimbursementId);
@@ -69,18 +71,17 @@ const Liquidations = () => {
     }
 
     const filterLiquidations = () => {
-        setIsLoading(true)
+        setIsFiltering(true);
         if (status === 'pending') {
             setFilteredLiq(liquidations.filter(liq => liq.status === 'pending'));
-            setIsLoading(false)
         } else if (status === 'accepted') {
             setFilteredLiq(liquidations.filter(liq => liq.status === 'accepted'));
-            setIsLoading(false)
         } else if (status === 'rejected') {
             setFilteredLiq(liquidations.filter(liq => liq.status === 'rejected'));
-            setIsLoading(false)
         }
+        setIsFiltering(false);
     };
+
 
     const fetchItemsForLiquidation = (liquidationId, e) => {
         if (showItemsLiqId === liquidationId) {
@@ -260,68 +261,74 @@ const Liquidations = () => {
 
 
                         <div className='reim-card'>
-                            {filteredLiq.length > 0 ? (
-                                filteredLiq.map(liquidation => (
-                                    <div key={liquidation._id} className='reimindiv'>
+                            {isFiltering ? (
+                                <Spinner /> // Show spinner while filtering
+                            ) : (
+                                filteredLiq.length > 0 ? (
+                                    filteredLiq.map(liquidation => (
+                                        <div key={liquidation._id} className='reimindiv'>
+                                            <div className='flexy'>
+                                                <div className='reim-info'>
+                                                    <h3>{liquidation.name}</h3>
+                                                    <p>{liquidation.description} </p>
+                                                    <p>Total Amount: Php {liquidation.total_price}</p>
+                                                    <p>Remaining Amount: {liquidation.remaining_amount}</p>
+                                                    <p>Date Submitted: {formatDate(liquidation.submission_date)}</p>
 
-                                        <div className='flexy'>
-                                            <div className='reim-info'>
-                                                <p>Name: {liquidation.name}</p>
-                                                <p>Description: {liquidation.description} </p>
-                                                <p>Total Amount: Php {liquidation.total_price}</p>
-                                                <p>Date Submitted: {formatDate(liquidation.submission_date)}</p>
-                                                <p>Remaining Amount: {liquidation.remaining_amount}</p>
-                                                {liquidation.status === 'accepted' && (
-                                                    <p>Approval Date: {formatDate(liquidation.approval_date)}</p>
-                                                )}
+                                                    {liquidation.status === 'accepted' && (
+                                                        <p>Approval Date: {formatDate(liquidation.approval_date)}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className='reim-butts'>
+                                                    <button onClick={() => handleDelete(liquidation._id)}>Delete</button>
+                                                    <button onClick={() => openUpdateModal(liquidation)}>Update</button>
+                                                    <button onClick={() => openAddItemModal(liquidation._id)}>Add Item</button>
+                                                    <button onClick={() => fetchItemsForLiquidation(liquidation._id)}>Show Items</button>
+                                                </div>
                                             </div>
 
-                                            <div className='reim-butts'>
-                                                <button onClick={() => handleDelete(liquidation._id)}>Delete</button>
-                                                <button onClick={() => openUpdateModal(liquidation)}>Update</button>
-                                                <button onClick={() => openAddItemModal(liquidation._id)}>Add Item</button>
-                                                <button onClick={() => fetchItemsForLiquidation(liquidation._id)}>Show Items</button></div>
-                                        </div>
-
-                                        {showItemsLiqId === liquidation._id && (
-                                            isLoading ? (
-                                                <Spinner /> // Show spinner while loading
-                                            ) : (
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Item</th>
-                                                            <th>Price</th>
-                                                            <th>Quantity</th>
-                                                            <th>Total Price</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {liquidationItems.map(item => (
-                                                            <tr key={item._id}>
-                                                                <td className="item-column">{item.item}</td>
-                                                                <td>{item.price}</td>
-                                                                <td>{item.quantity}</td>
-                                                                <td>{item.total_price}</td>
-                                                                <td>
-                                                                    <div className='reim-butts card-butts'>
-                                                                        <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
-                                                                        <button onClick={() => handleUpdateItem(item._id)}>Update</button>
-                                                                    </div>
-                                                                </td>
+                                            {showItemsLiqId === liquidation._id && (
+                                                isLoading ? (
+                                                    <Spinner /> // Show spinner while loading
+                                                ) : (
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Item</th>
+                                                                <th>Price</th>
+                                                                <th>Quantity</th>
+                                                                <th>Total Price</th>
+                                                                <th>Actions</th>
                                                             </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            )
-                                        )}
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No liquidations found.</p>
+                                                        </thead>
+                                                        <tbody>
+                                                            {liquidationItems.map(item => (
+                                                                <tr key={item._id}>
+                                                                    <td className="item-column">{item.item}</td>
+                                                                    <td>{item.price}</td>
+                                                                    <td>{item.quantity}</td>
+                                                                    <td>{item.total_price}</td>
+                                                                    <td>
+                                                                        <div className='reim-butts card-butts'>
+                                                                            <button onClick={() => handleDeleteItem(item._id)}>Delete</button>
+                                                                            <button onClick={() => handleUpdateItem(item._id)}>Update</button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                )
+                                            )}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No liquidations found.</p>
+                                )
                             )}
                         </div>
+
 
                         <div className='flexy'>
                             <h2>Returned Liquidations</h2>
@@ -334,8 +341,8 @@ const Liquidations = () => {
                                     <div key={liquidation._id} className='reimindiv'>
                                         <div className='flexy'>
                                             <div className='reim-info'>
-                                                <p>Name: {liquidation.name}</p>
-                                                <p>Description: {liquidation.description} </p>
+                                                <h3>{liquidation.name}</h3>
+                                                <p>{liquidation.description} </p>
                                                 <p>Total Price: Php {liquidation.total_price}</p>
                                                 <p>Approved by: {liquidation.comments}</p>
                                                 <p>Approval Date: {formatDate(liquidation.approval_date)}</p>
@@ -397,9 +404,11 @@ const Liquidations = () => {
                                     <div key={liquidation._id} className='reimindiv'>
                                         <div className='flexy'>
                                             <div className='reim-info'>
-                                                <p>Name: {liquidation.name}</p>
-                                                <p>Description: {liquidation.description} </p>
+                                                <h3>{liquidation.name}</h3>
+                                                <p>{liquidation.description} </p>
                                                 <p>Initial Amount: Php {liquidation.initial_amount}</p>
+                                                <p>Remaining Amount: {liquidation.remaining_amount}</p>
+                                                <p>Approval Date: {formatDate(liquidation.approval_date)}</p>
                                             </div>
                                             <div className='reim-butts'>
                                                 <button onClick={() => handleDelete(liquidation._id)}>Delete</button>

@@ -341,23 +341,31 @@ export const getAllLiqItems = async (req, res, next) => {
 export const getAllLiq = async (req, res, next) => {
   try {
     const userId = req.user.userId;
+    const { page = 1, limit = 5 } = req.query; // Default limit to 3 items per page
 
-    // Retrieve all reimbursements from the database
+    // Convert page and limit to numbers
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    // Calculate the offset based on the page number and limit
+    const offset = (pageNumber - 1) * limitNumber;
+
+    // Retrieve all liquidations from the database
     const allLiquidations = await liquidation.find();
 
-    // Filter out reimbursements where created_by matches the userId
-    const filteredLiq = allLiquidations.filter(
-      liq => liq.created_by.toString() !== userId
-    );
+    // Filter out liquidations where created_by matches the userId
+    const filteredLiq = allLiquidations
+      .filter(liq => liq.created_by.toString() !== userId)
+      .slice(offset, offset + limitNumber); // Apply pagination
 
     res.status(200).json({
       success: true,
       liquidations: filteredLiq,
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 
 export const getCreatedLiq = async (req, res, next) => {
