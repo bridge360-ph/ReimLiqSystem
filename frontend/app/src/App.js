@@ -16,6 +16,7 @@ import ManageReim from './pages/ManageReim.js';
 import ManageLiq from './pages/ManageLiq.js';
 import Settings from './pages/Settings.js'
 import NotFound from './pages/NotFound.js';
+import './styles/responsive.css'
 
 function App() {
   const [usertype, setUsertype] = useState(localStorage.getItem('usertype'));
@@ -39,7 +40,7 @@ function App() {
 
   return (
     <div className='app-container'>
-      <div>
+      <div className='hamcont'>
         {usertype && (
           <div className={`hamburger ${!isNavVisible ? 'active' : ''}`} onClick={toggleNav}>
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill=" #0072ce" viewBox="0 0 16 16">

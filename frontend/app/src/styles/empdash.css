@@ -75,3 +75,28 @@
     color: white;
     font-size: .6em;
 }
+
+@media (max-width: 800px) {
+    .dashconts {
+        width: 100%;
+        height: auto;
+    }
+
+    .flexy {
+        flex-direction: column;
+        gap: .5em;
+        text-align: center;
+    }
+
+    .add-reim {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 1040px) {
+    .dash-container {
+        padding: 1em;
+    }
+
+}

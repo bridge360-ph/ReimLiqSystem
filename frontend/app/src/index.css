@@ -28,12 +28,13 @@
 
 .app-container {
   display: flex;
+  width: 100%;
 }
 
 .content-cont {
-  padding: 1em;
   width: 100%;
   background-color: #f5f5f5;
+  padding: 1em;
 }
 
 .nav-container {
@@ -184,10 +185,8 @@
   display: none;
   cursor: pointer;
   position: absolute;
-  padding: 10px;
-  top: 20px;
-  left: 20px;
   z-index: 10000;
+  padding: 1em 1em 0em;
   /* Set a high z-index to ensure it's always on top of other content */
 }
 
@@ -199,10 +198,11 @@
 @media (max-width: 1040px) {
   .hamburger {
     display: flex;
-    color: #0072ce;
     position: absolute;
     /* Show the hamburger when screen width is below 1040px */
   }
+
+
 
   .hamburger.active {
 
@@ -223,13 +223,19 @@
 
   .app-container {
     display: flex;
+    width: 100%;
     flex-direction: column;
-    overflow: hidden;
   }
+
+  .content-cont {
+    max-width: 100%;
+    background-color: #f5f5f5;
+    padding: 0;
+  }
+
+
+
+
 }
 
 /* Additional styles for hamburger icon when active */
-.hamburger.active svg {
-  transform: rotate(90deg);
-  /* Rotate the icon when active */
-}

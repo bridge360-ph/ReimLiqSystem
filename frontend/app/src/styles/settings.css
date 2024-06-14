@@ -43,3 +43,22 @@
     font-size: 2em;
     margin-bottom: 1.5em;
 }
+
+@media (max-width: 1040px) {
+    .settings-header {
+        text-align: center;
+        border-bottom: none;
+        margin-bottom: 0em;
+        padding: 1em;
+    }
+
+    .settings-container {
+        max-width: 100%;
+        padding: 1em;
+    }
+
+    .settings-container h2 {
+        text-align: center;
+    }
+
+}

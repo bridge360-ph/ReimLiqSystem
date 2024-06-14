@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../styles/login.css';
 import Spinner from '../components/shared/Spinner';
+import '../styles/responsive.css'
 
 const LoginPage = ({ setUsertype }) => {
     const [email, setEmail] = useState("");

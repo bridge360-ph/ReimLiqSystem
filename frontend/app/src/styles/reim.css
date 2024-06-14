@@ -97,6 +97,7 @@ table {
     padding: 1em;
     margin: 1em 0em;
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
 }
 
@@ -117,4 +118,30 @@ table tbody {
 
 table tbody .item-column {
     text-align: left;
+}
+
+@media (max-width: 1040px) {
+    .reim-card {
+        width: 95%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .reimpagecont {
+        align-items: center;
+    }
+
+    .reimpagecont {
+        padding: 1em;
+    }
+
+    .card-butts {
+        flex-direction: column;
+    }
+
+    .filt {
+        margin-bottom: 1em;
+    }
+
+
 }
