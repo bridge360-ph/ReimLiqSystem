@@ -341,7 +341,7 @@ export const getAllLiqItems = async (req, res, next) => {
 export const getAllLiq = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { page = 1, limit = 5 } = req.query; // Default limit to 3 items per page
+    const { page = 1, limit = 1000 } = req.query; // Default limit to 3 items per page
 
     // Convert page and limit to numbers
     const pageNumber = parseInt(page);

@@ -367,25 +367,32 @@ export const getAllItems = async (req, res, next) => {
 export const getAllReim = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { page = 1, limit = 5 } = req.query; // Default limit to 5 items per page
+    const { page = 1, limit = 20 } = req.query; // Default limit to 5 items per page
 
     // Calculate the offset based on the page number and limit
     const offset = (page - 1) * limit;
+
+    const reimbursements = await Reimbursement.find()
+      .skip(offset)
+      .limit(limit);
 
     // Retrieve all reimbursements from the database
     const allReimbursements = await Reimbursement.find();
 
     // Filter out reimbursements where created_by matches the userId
-    const filteredReimbursements = allReimbursements.filter(
+    const filteredReimbursements = reimbursements.filter(
       reimbursement => reimbursement.created_by.toString() !== userId
     );
-
+    const totalReimbursements = await Reimbursement.countDocuments();
+    const totalPages = Math.ceil(totalReimbursements / limit);
     // Paginate the filtered reimbursements
     const paginatedReimbursements = filteredReimbursements.slice(offset, offset + limit);
 
     res.status(200).json({
       success: true,
-      reimbursements: paginatedReimbursements,
+      reimbursements: filteredReimbursements,
+      totalPages,
+      currentPage: page,
     });
   } catch (error) {
     next(error);
@@ -396,7 +403,7 @@ export const getAllReim = async (req, res, next) => {
 export const getCreatedReim = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { page = 1, limit = 5 } = req.query; // Default limit to 5 items per page
+    const { page = 1, limit = 0 } = req.query; // Default limit to 5 items per page
 
     // Calculate the offset based on the page number and limit
     const offset = (page - 1) * limit;
