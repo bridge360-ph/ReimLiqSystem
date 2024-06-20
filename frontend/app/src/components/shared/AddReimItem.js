@@ -38,6 +38,7 @@ const AddReimItem = ({ reimbursementId, onClose }) => {
 
             if (response.status === 201) {
                 onClose();
+                window.location.reload();
             } else {
                 console.error('Failed to add item');
             }
