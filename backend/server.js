@@ -24,6 +24,9 @@ app.use(cors({
 }))
 app.use(morgan("dev"))
 
+app.get("/", (req, res) => {
+    res.json("hello")
+})
 //routes
 
 app.use('/api/v1/test', testRoutes)
