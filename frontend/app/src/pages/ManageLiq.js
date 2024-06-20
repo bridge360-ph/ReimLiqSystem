@@ -21,7 +21,7 @@ const ManageLiq = () => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/user/get-user/${userId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/user/get-user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -47,7 +47,7 @@ const ManageLiq = () => {
     const fetchLiquidations = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/liq/get-all-liq', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/liq/get-all-liq', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -90,7 +90,7 @@ const ManageLiq = () => {
     const fetchLiquidationItems = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get(`/api/v1/liq/get-all-items/${liquidationId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/liq/get-all-items/${liquidationId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -111,7 +111,7 @@ const ManageLiq = () => {
     const acceptLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/accept-liq',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/accept-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {
@@ -136,7 +136,7 @@ const ManageLiq = () => {
     const rejectLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/reject-liq',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/reject-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {
@@ -161,7 +161,7 @@ const ManageLiq = () => {
     const returnLiq = async (liquidationId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('/api/v1/process/return-liq',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/return-liq',
                 { liquidation_id: liquidationId },
                 {
                     headers: {

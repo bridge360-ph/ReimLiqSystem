@@ -25,7 +25,7 @@ const AddReimItem = ({ reimbursementId, onClose }) => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.post('/api/v1/reim/add-reim-item', {
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/reim/add-reim-item', {
                 reimbursement_id: reimbursementId,
                 item,
                 quantity,

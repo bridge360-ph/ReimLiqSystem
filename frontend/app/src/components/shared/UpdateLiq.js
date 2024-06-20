@@ -25,7 +25,7 @@ const UpdateLiq = ({ isOpen, onClose, selectedLiquidation }) => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.put(`/api/v1/liq/update-liq/${selectedLiquidation._id}`,
+            const response = await axios.put(`https://reimapi.onrender.com/api/v1/liq/update-liq/${selectedLiquidation._id}`,
                 { name, description, initial_amount }, {
                 headers: {
                     'Authorization': `Bearer ${token}`

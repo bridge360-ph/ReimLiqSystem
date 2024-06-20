@@ -21,7 +21,7 @@ const UpdateReimItem = ({ isOpen, onClose, selectedItem }) => {
         const token = localStorage.getItem('token');
         const itemId = selectedItem._id;
         try {
-            const response = await axios.put(`/api/v1/reim/update-reim-item/${itemId}`,
+            const response = await axios.put(`https://reimapi.onrender.com/api/v1/reim/update-reim-item/${itemId}`,
                 updatedItem, {
                 headers: {
                     'Authorization': `Bearer ${token}`

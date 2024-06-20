@@ -63,7 +63,7 @@ const Reimbursements = () => {
     const fetchReimbursements = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/reim/get-created-reim', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/reim/get-created-reim', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -113,7 +113,7 @@ const Reimbursements = () => {
         const token = localStorage.getItem('token');
         try {
             setIsLoading(true)
-            const response = await axios.get(`/api/v1/reim/get-reim-items/${reimbursementId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/reim/get-reim-items/${reimbursementId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -136,7 +136,7 @@ const Reimbursements = () => {
     const handleDelete = async (id) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.delete(`/api/v1/reim/del-reim/${id}`, {
+            const response = await axios.delete(`https://reimapi.onrender.com/api/v1/reim/del-reim/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -158,7 +158,7 @@ const Reimbursements = () => {
     const handleDeleteItem = async (itemId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.delete(`/api/v1/reim/del-reim-item/${itemId}`, {
+            const response = await axios.delete(`https://reimapi.onrender.com/api/v1/reim/del-reim-item/${itemId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

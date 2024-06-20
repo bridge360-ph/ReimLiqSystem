@@ -13,7 +13,7 @@ const PrivateRoutes = ({ children }) => {
         try {
             dispatch(showLoading());
             const { data } = await axios.post(
-                '/api/v1/user/post-user',
+                'https://reimapi.onrender.com/api/v1/user/post-user',
                 { token: localStorage.getItem('token') },
                 {
                     headers: {

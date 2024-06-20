@@ -28,7 +28,7 @@ const Register = () => {
             dispatch(showLoading());
             setLoading(true); // Show spinner
 
-            const { data } = await axios.post('/api/v1/auth/empregister', {
+            const { data } = await axios.post('https://reimapi.onrender.com/api/v1/auth/empregister', {
                 fullname,
                 email,
                 password,
@@ -58,7 +58,7 @@ const Register = () => {
             dispatch(showLoading());
             setLoading(true); // Show spinner
 
-            const { data } = await axios.post('/api/v1/auth/adminregister', {
+            const { data } = await axios.post('https://reimapi.onrender.com/api/v1/auth/adminregister', {
                 fullname,
                 email,
                 password,

@@ -45,7 +45,7 @@ const Liquidations = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.get('/api/v1/liq/get-created-liq', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/liq/get-created-liq', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -101,7 +101,7 @@ const Liquidations = () => {
         const token = localStorage.getItem('token');
         try {
             setIsLoading(true);
-            const response = await axios.get(`/api/v1/liq/get-all-items/${liquidationId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/liq/get-all-items/${liquidationId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -153,7 +153,7 @@ const Liquidations = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.delete(`/api/v1/liq/del-liq/${id}`, {
+            const response = await axios.delete(`https://reimapi.onrender.com/api/v1/liq/del-liq/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -187,7 +187,7 @@ const Liquidations = () => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.delete(`/api/v1/liq/del-liq-item/${itemId}`, {
+            const response = await axios.delete(`https://reimapi.onrender.com/api/v1/liq/del-liq-item/${itemId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

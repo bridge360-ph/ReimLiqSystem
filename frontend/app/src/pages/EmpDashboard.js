@@ -27,7 +27,7 @@ const EmpDashboard = () => {
             const fetchUserData = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const response = await axios.get(`/api/v1/user/get-user/${userId}`, {
+                    const response = await axios.get(`https://reimapi.onrender.com/api/v1/user/get-user/${userId}`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
@@ -46,7 +46,7 @@ const EmpDashboard = () => {
             const fetchReimbursements = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const response = await axios.get('/api/v1/reim/get-created-reim', {
+                    const response = await axios.get('https://reimapi.onrender.com/api/v1/reim/get-created-reim', {
                         params: { limit: 3 },
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -69,7 +69,7 @@ const EmpDashboard = () => {
             const fetchLiquidations = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const response = await axios.get('/api/v1/liq/get-created-liq', {
+                    const response = await axios.get('https://reimapi.onrender.com/api/v1/liq/get-created-liq', {
                         params: { limit: 3 },
                         headers: {
                             'Authorization': `Bearer ${token}`

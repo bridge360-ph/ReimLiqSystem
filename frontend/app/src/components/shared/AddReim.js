@@ -20,7 +20,7 @@ const AddReim = ({ isOpen, onClose }) => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.post('/api/v1/reim/add-reim', { name, description }, {
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/reim/add-reim', { name, description }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

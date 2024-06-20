@@ -18,7 +18,7 @@ const Settings = () => {
             try {
                 const userId = localStorage.getItem('userId');
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`/api/v1/user/get-user/${userId}`, {
+                const response = await axios.get(`https://reimapi.onrender.com/api/v1/user/get-user/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

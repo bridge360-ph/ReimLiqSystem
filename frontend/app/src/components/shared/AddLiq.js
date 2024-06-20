@@ -27,7 +27,7 @@ const AddLiq = ({ isOpen, onClose }) => {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await axios.post('/api/v1/liq/add-liq', { name, description, initial_amount }, {
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/liq/add-liq', { name, description, initial_amount }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

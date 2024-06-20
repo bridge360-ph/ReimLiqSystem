@@ -29,7 +29,7 @@ const ManageReim = () => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/user/get-user/${userId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/user/get-user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -49,7 +49,7 @@ const ManageReim = () => {
     const fetchReimbursements = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/reim/get-all-reim', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/reim/get-all-reim', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -93,7 +93,7 @@ const ManageReim = () => {
     const fetchReimbursementItems = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get(`/api/v1/reim/get-reim-items/${reimbursementId}`, {
+            const response = await axios.get(`https://reimapi.onrender.com/api/v1/reim/get-reim-items/${reimbursementId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -114,7 +114,7 @@ const ManageReim = () => {
     const acceptReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/accept-reim',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/accept-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {
@@ -139,7 +139,7 @@ const ManageReim = () => {
     const rejectReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/process/reject-reim',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/reject-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {
@@ -164,7 +164,7 @@ const ManageReim = () => {
     const payReimbursement = async (reimbursementId) => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.post('/api/v1/process/pay-reim',
+            const response = await axios.post('https://reimapi.onrender.com/api/v1/process/pay-reim',
                 { reimbursement_id: reimbursementId },
                 {
                     headers: {

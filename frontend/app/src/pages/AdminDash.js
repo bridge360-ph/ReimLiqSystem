@@ -28,7 +28,7 @@ const AdminDash = () => {
     const fetchPendingReimbursements = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/reim/get-all-reim', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/reim/get-all-reim', {
                 params: { limit: 5 }, // Limiting to 5 items per page
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -51,7 +51,7 @@ const AdminDash = () => {
     const fetchPendingLiquidations = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/liq/get-all-liq', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/liq/get-all-liq', {
                 params: { limit: 5 }, // Limiting to 5 items per page
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -74,7 +74,7 @@ const AdminDash = () => {
     const fetchYourReimbursements = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/reim/get-created-reim', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/reim/get-created-reim', {
                 params: { limit: 3, userId }, // Fetch reimbursements created by the logged-in admin
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -96,7 +96,7 @@ const AdminDash = () => {
     const fetchYourLiquidations = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await axios.get('/api/v1/liq/get-created-liq', {
+            const response = await axios.get('https://reimapi.onrender.com/api/v1/liq/get-created-liq', {
                 params: { limit: 3, userId }, // Fetch liquidations created by the logged-in admin
                 headers: {
                     'Authorization': `Bearer ${token}`
