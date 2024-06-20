@@ -17,7 +17,11 @@ const app = express()
 dotenv.config()
 connectDB()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: ["https://reim-liq-system.vercel.app"],
+    methods: ["POST", "GET", "PUT", "PATCH", "DELETE", "POST"],
+    credentials: true
+}))
 app.use(morgan("dev"))
 
 //routes
