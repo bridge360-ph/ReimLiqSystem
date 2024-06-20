@@ -37,7 +37,7 @@ const LoginPage = ({ setUsertype }) => {
         } catch (error) {
             setError(error)
             console.log("Login error:", error);
-            toast.error('An error occurred during login. Please try again.');
+            toast.error(error);
         } finally {
             setLoading(false); // Hide spinner
         }
