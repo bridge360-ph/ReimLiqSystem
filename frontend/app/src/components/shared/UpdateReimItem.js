@@ -45,6 +45,7 @@ const UpdateReimItem = ({ isOpen, onClose, selectedItem }) => {
 
     return (
         <div className="modal-overlay">
+            {error}
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
                 <form onSubmit={handleSubmit} className='formcont'>

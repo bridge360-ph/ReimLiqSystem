@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-import ManageReim from '../../pages/ManageReim';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';

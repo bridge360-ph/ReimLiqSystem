@@ -329,7 +329,7 @@ const Liquidations = () => {
                             )}
                         </div>
 
-
+                        {error}
                         <div className='flexy'>
                             <h2>Returned Liquidations</h2>
                         </div>

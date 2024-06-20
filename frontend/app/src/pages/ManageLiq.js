@@ -52,6 +52,7 @@ const ManageLiq = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            setIsLoading(true)
 
             if (response.data.success) {
                 const pending = response.data.liquidations.filter(liq => liq.status === 'pending');
@@ -64,9 +65,11 @@ const ManageLiq = () => {
                 setrejectedLiquidations(rejected);
                 setunreturnedLiquidations(unpaid);
                 setreturnedLiquidations(paid);
+                setIsLoading(false)
             } else {
                 console.error('Failed to fetch liquidations');
                 setError('Failed to fetch liquidations');
+                setIsLoading(false)
             }
         } catch (error) {
             console.error('Error fetching liquidations:', error);
@@ -233,7 +236,7 @@ const ManageLiq = () => {
                                 </div>
                             ))}
                         </div>
-
+                        {error}
                         <div className='flexy'>
                             <h2>Approved Liquidations</h2>
                         </div>

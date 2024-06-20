@@ -294,7 +294,7 @@ const Reimbursements = () => {
                     <div className='flexy'>
                         <h2>Paid Reimbursements</h2>
                     </div>
-
+                    {error}
                     <div className='reim-card'>
 
                         {paidReimbursements.length > 0 ? (

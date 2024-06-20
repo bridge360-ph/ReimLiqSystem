@@ -51,6 +51,7 @@ const UpdateLiq = ({ isOpen, onClose, selectedLiquidation }) => {
     if (!isOpen) return null;
     return (
         <div className="modal-overlay">
+            {error}
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>×</button>
                 <form onSubmit={handleSubmit}>

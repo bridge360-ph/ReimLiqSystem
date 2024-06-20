@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -120,6 +119,7 @@ const AdminDash = () => {
         <>
             {usertype === 'admin' && (
                 <>
+                    {error}
                     <h1 className='settings-header'>Welcome Admin!</h1>
                     <div className='dash-container'>
                         <div className='flex-cont'>

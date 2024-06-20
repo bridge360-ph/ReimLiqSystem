@@ -54,6 +54,7 @@ const ManageReim = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            setIsLoading(true)
 
             if (response.data.success) {
                 const pending = response.data.reimbursements.filter(reim => reim.status === 'pending');
@@ -67,6 +68,7 @@ const ManageReim = () => {
                 setRejectedReimbursements(rejected);
                 setUnpaidReimbursements(unpaid);
                 setPaidReimbursements(paid);
+                setIsLoading(false)
             } else {
                 console.error('Failed to fetch reimbursements');
                 setError('Failed to fetch reimbursements');
@@ -74,6 +76,7 @@ const ManageReim = () => {
         } catch (error) {
             console.error('Error fetching reimbursements:', error);
             setError('Error fetching reimbursements');
+            setIsLoading(true)
         }
     };
 
@@ -196,6 +199,7 @@ const ManageReim = () => {
                 <Spinner />
             ) : (
                 <div className='reimpage'>
+                    {error}
                     <h1 className='settings-header'>Manage Reimbursements</h1>
                     <div className='reimpagecont'>
                         <div className='flexy'>
