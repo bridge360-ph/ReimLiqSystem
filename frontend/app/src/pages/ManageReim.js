@@ -13,8 +13,6 @@ const ManageReim = () => {
     const [reimbursementItems, setReimbursementItems] = useState([]);
     const [fullname, setFullname] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
 
 
     useEffect(() => {
