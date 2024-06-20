@@ -18,7 +18,7 @@ const LoginPage = ({ setUsertype }) => {
         try {
             setLoading(true); // Show spinner
             const loginData = { email, password };
-            const url = usertype === "employee" ? "/api/v1/auth/emplogin" : "/api/v1/auth/admlogin";
+            const url = usertype === "employee" ? "https://reimapi.onrender.com/api/v1/auth/emplogin" : "/api/v1/auth/admlogin";
             const { data } = await axios.post(url, loginData);
 
             if (data.success) {
