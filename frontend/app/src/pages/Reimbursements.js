@@ -70,8 +70,8 @@ const Reimbursements = () => {
             });
             setIsLoading(true);
             if (response.data.success) {
-                const paid = response.data.reimbursements.filter(reim => reim.paystatus == 'paid');
-                const unpaid = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid' && reim.status == 'accepted');
+                const paid = response.data.reimbursements.filter(reim => reim.paystatus === 'paid');
+                const unpaid = response.data.reimbursements.filter(reim => reim.paystatus !== 'paid' && reim.status === 'accepted');
                 setReimbursements(response.data.reimbursements);
                 setPaidReimbursements(paid);
                 setUnpaidReimbursements(unpaid);
