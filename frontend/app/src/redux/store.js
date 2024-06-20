@@ -6,7 +6,8 @@ const store = configureStore({
     reducer: {
         alerts: alertReducer,
         auth: authSlice.reducer,
-    }
+    },
+    devTools: false
 });
 
 export default store;
