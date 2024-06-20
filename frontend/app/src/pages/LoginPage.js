@@ -31,7 +31,7 @@ const LoginPage = ({ setUsertype }) => {
                 navigate(redirectPath);
                 toast.success("Login successful");
             } else {
-                toast.error('Login failed. Please check your credentials and try again.');
+                toast.error(error);
                 console.log(error)
             }
         } catch (error) {
