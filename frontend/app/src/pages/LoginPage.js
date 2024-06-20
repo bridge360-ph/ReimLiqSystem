@@ -13,7 +13,7 @@ const LoginPage = ({ setUsertype }) => {
     const [usertype, setUserType] = useState("employee");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-
+    const [error, setError] = useState("");
     const handleLogin = async () => {
         try {
             setLoading(true); // Show spinner
@@ -32,8 +32,10 @@ const LoginPage = ({ setUsertype }) => {
                 toast.success("Login successful");
             } else {
                 toast.error('Login failed. Please check your credentials and try again.');
+                console.log(error)
             }
         } catch (error) {
+            setError(error)
             console.log("Login error:", error);
             toast.error('An error occurred during login. Please try again.');
         } finally {
