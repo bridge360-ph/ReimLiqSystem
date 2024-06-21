@@ -282,9 +282,13 @@ const Reimbursements = () => {
                                             <button onClick={(e) => openAddItemModal(reimbursement._id, e)}>Add Item</button>
                                             <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
                                             <button onClick={(e) => openImageModal(reimbursement._id, e)}>Add Image</button>
-                                            <button onClick={() => setShowReceipt(!showReceipt)}>
-                                                {showReceipt ? 'Hide Receipt' : 'Show Receipt'}
-                                            </button>
+                                            {
+                                                reimbursement.receipt !== 'none' && (
+                                                    <button onClick={() => setShowReceipt(!showReceipt)}>
+                                                        {showReceipt ? 'Hide Receipt' : 'Show Receipt'}
+                                                    </button>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     {showItemsReimbursementId === reimbursement._id && (

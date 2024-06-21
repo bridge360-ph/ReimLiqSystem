@@ -13,7 +13,7 @@ const ManageReim = () => {
     const [reimbursementItems, setReimbursementItems] = useState([]);
     const [fullname, setFullname] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
+    const [showReceipt, setShowReceipt] = useState(false);
 
     useEffect(() => {
         fetchUserDetails();
@@ -214,11 +214,30 @@ const ManageReim = () => {
                                             <p>{reimbursement.description} </p>
                                             <p>Total Price: Php {reimbursement.total_price}</p>
                                             <p>Date Submitted: {formatDate(reimbursement.submission_date)}</p>
+                                            {showReceipt && reimbursement.receipt !== 'none' && (
+                                                <div className='modal-overlay receipt'>
+                                                    <div className='modal-content'>
+                                                        <button className='modal-close' onClick={() => setShowReceipt(!showReceipt)}>
+                                                            {showReceipt ? 'x' : 'Show Receipt'}
+                                                        </button>
+                                                        <img src={`/assets/images/uploads/${reimbursement.receipt}`} alt='Receipt' />
+                                                    </div>
+
+                                                </div>
+
+                                            )}
                                         </div>
                                         <div className='reim-butts'>
                                             <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
                                             <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
                                             <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
+                                            {
+                                                reimbursement.receipt !== 'none' && (
+                                                    <button onClick={() => setShowReceipt(!showReceipt)}>
+                                                        {showReceipt ? 'Hide Receipt' : 'Show Receipt'}
+                                                    </button>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     {selectedReimbursementId === reimbursement._id && (
