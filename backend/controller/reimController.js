@@ -52,6 +52,48 @@ export const createReimbursementController = async (req, res, next) => {
   }
 };
 
+//ADD RECEIPT IMAGE
+import multer from 'multer';
+import upload from '../middlewares/multerMiddleware.js'; // Assuming multer configuration is in multer.js
+
+export const addReceipt = async (req, res) => {
+  try {
+    const reimbursementId = req.params.id;
+    // Handle file upload using multer middleware
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: 'Multer error: ' + err.message });
+      } else if (err) {
+        return res.status(500).json({ message: 'Error uploading file: ' + err.message });
+      }
+
+      // Check if file is present
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      // Construct the filename (assuming it's already set by multer storage configuration)
+      const userId = req.user.userId; // Assuming userId is available in req.user
+      const fileName = userId + req.file.originalname;
+
+      // Update the reimbursement model with the filename
+      const reimbursement = await Reimbursement.findById(reimbursementId);
+      if (!reimbursement) {
+        return res.status(404).json({ message: 'Reimbursement not found' });
+      }
+
+      reimbursement.receipt = fileName; // Set the receipt attribute to the filename
+      await reimbursement.save();
+
+      // Respond with success message
+      return res.status(200).json({ message: 'Receipt added successfully', fileName });
+    });
+  } catch (error) {
+    console.error('Error adding receipt:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 //UPDATE REIM
 
 export const updateReimController = async (req, res, next) => {

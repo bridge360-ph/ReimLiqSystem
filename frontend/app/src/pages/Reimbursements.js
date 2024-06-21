@@ -6,6 +6,8 @@ import AddReimItem from '../components/shared/AddReimItem.js';
 import UpdateReimItem from '../components/shared/UpdateReimItem.js';
 import '../styles/reim.css';
 import Spinner from '../components/shared/Spinner.js';
+import AddImageModal from '../components/shared/AddImageModal.js';
+
 
 const Reimbursements = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +26,19 @@ const Reimbursements = () => {
     const [filteredReimbursements, setFilteredReimbursements] = useState([]);
     const [showItemsReimbursementId, setShowItemsReimbursementId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [selectedImageReimbursementId, setSelectedImageReimbursementId] = useState(null);
+    const [showReceipt, setShowReceipt] = useState(false);
+
+    const openImageModal = (reimbursementId, e) => {
+        e.stopPropagation();
+        setSelectedImageReimbursementId(reimbursementId);
+        setIsImageModalOpen(true);
+    };
+
+    const closeImageModal = () => {
+        setIsImageModalOpen(false);
+    };
 
     useEffect(() => {
         fetchReimbursements();
@@ -194,6 +209,11 @@ const Reimbursements = () => {
             <div className='reimpage'>
                 <h1 className='settings-header'>Reimbursements</h1>
                 <AddReim isOpen={isModalOpen} onClose={closeModal} />
+                <AddImageModal
+                    isOpen={isImageModalOpen}
+                    onClose={closeImageModal}
+                    reimbursementId={selectedImageReimbursementId}
+                />
                 <UpdateReim
                     isOpen={isUpdateModalOpen}
                     onClose={closeUpdateModal}
@@ -242,6 +262,18 @@ const Reimbursements = () => {
                                             {reimbursement.status === 'accepted' && (
                                                 <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
                                             )}
+                                            {showReceipt && (
+                                                <div className='modal-overlay'>
+                                                    <div className='modal-content'>
+                                                        <button className='modal-close' onClick={() => setShowReceipt(!showReceipt)}>
+                                                            {showReceipt ? 'x' : 'Show Receipt'}
+                                                        </button>
+                                                        <img src={`/assets/images/uploads/${reimbursement.receipt}`} alt='Receipt' />
+                                                    </div>
+
+                                                </div>
+
+                                            )}
 
                                         </div>
                                         <div className='reim-butts'>
@@ -249,6 +281,10 @@ const Reimbursements = () => {
                                             <button onClick={() => openUpdateModal(reimbursement)}>Update</button>
                                             <button onClick={(e) => openAddItemModal(reimbursement._id, e)}>Add Item</button>
                                             <button onClick={(e) => fetchItemsForReimbursement(reimbursement._id, e)}>Show Items</button>
+                                            <button onClick={(e) => openImageModal(reimbursement._id, e)}>Add Image</button>
+                                            <button onClick={() => setShowReceipt(!showReceipt)}>
+                                                {showReceipt ? 'Hide Receipt' : 'Show Receipt'}
+                                            </button>
                                         </div>
                                     </div>
                                     {showItemsReimbursementId === reimbursement._id && (
