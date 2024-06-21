@@ -263,7 +263,7 @@ const Reimbursements = () => {
                                                 <p>Approval Date: {formatDate(reimbursement.approval_date)}</p>
                                             )}
                                             {showReceipt && (
-                                                <div className='modal-overlay'>
+                                                <div className='modal-overlay receipt'>
                                                     <div className='modal-content'>
                                                         <button className='modal-close' onClick={() => setShowReceipt(!showReceipt)}>
                                                             {showReceipt ? 'x' : 'Show Receipt'}

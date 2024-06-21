@@ -233,7 +233,13 @@
     padding: 0;
   }
 
+  .receipt {
+    width: 100%;
+  }
 
+  .modal-content img {
+    width: 100%;
+  }
 
 
 }
