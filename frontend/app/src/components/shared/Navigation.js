@@ -129,7 +129,7 @@ const Navigation = ({ toggleNav }) => {
                     </div>
 
                     <div className='userprof' onClick={closeMenu}>
-                        <img src='/assets/prof.png'></img>
+                        <img src={`/assets/images/uploads/${userData.image}`}></img>
                         <div>
                             <p className='username'>{userData.fullname}</p>
                             <p>{userData.email}</p>

@@ -18,18 +18,6 @@ dotenv.config()
 connectDB()
 app.use(express.json())
 app.use(cors());
-const allowedOrigins = ['https://reimliqsystem.onrender.com', 'http://localhost:3000'];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Check if the origin is allowed
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-}));
 
 app.use(morgan("dev"))
 

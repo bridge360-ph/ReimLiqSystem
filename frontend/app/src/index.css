@@ -244,4 +244,8 @@
 
 }
 
+.userprof img {
+  border-radius: 50%;
+}
+
 /* Additional styles for hamburger icon when active */

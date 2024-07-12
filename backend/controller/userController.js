@@ -1,5 +1,7 @@
 import employee from '../models/employee.js';
-import bcrypt from 'bcryptjs'// Ensure correct import
+import bcrypt from 'bcryptjs'
+import Employee from '../models/employee.js';
+import Admin from '../models/admin.js';
 
 export const updateEmpController = async (req, res, next) => {
   try {
@@ -143,6 +145,63 @@ export const postUserController = async (req, res, next) => {
       success: false,
       error: error.message,
     });
+  }
+};
+
+
+import multer from 'multer';
+import upload from '../middlewares/multerMiddleware.js'; // Assuming multer configuration is in multer.j// Import your Admin model
+
+export const addImage = async (req, res) => {
+  const userType = req.user.userType === 'admin' ? 'Admin' : 'Employee';
+  try {
+    // Handle file upload using multer middleware
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: 'Multer error: ' + err.message });
+      } else if (err) {
+        return res.status(500).json({ message: 'Error uploading file: ' + err.message });
+      }
+
+      // Check if file is present
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+
+      // Construct the filename (assuming it's already set by multer storage configuration)
+      const userId = req.user.userId; // Assuming userId is available in req.user
+      const fileName = userId + req.file.originalname;
+
+      // Determine user type (employee or admin)
+      if (userType === 'Employee') {
+        // Update the employee model with the image filename
+        const employee = await Employee.findById(userId);
+        if (!employee) {
+          return res.status(404).json({ message: 'Employee not found' });
+        }
+        employee.image = fileName; // Set the image attribute to the filename
+        await employee.save();
+
+        // Respond with success message
+        return res.status(200).json({ message: 'Image added successfully for employee', fileName });
+      } else if (userType === 'Admin') {
+        // Update the admin model with the image filename
+        const admin = await Admin.findById(userId);
+        if (!admin) {
+          return res.status(404).json({ message: 'Admin not found' });
+        }
+        admin.image = fileName; // Set the image attribute to the filename
+        await admin.save();
+
+        // Respond with success message
+        return res.status(200).json({ message: 'Image added successfully for admin', fileName });
+      } else {
+        return res.status(400).json({ message: 'Invalid user type' });
+      }
+    });
+  } catch (error) {
+    console.error('Error adding image:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 

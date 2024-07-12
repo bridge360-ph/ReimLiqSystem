@@ -5,12 +5,54 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../styles/settings.css'
 
 const Settings = () => {
+
+    const [image, setImage] = useState(null);
+    const [error, setError] = useState('');
+
+    const handleFileChange = (e) => {
+        setImage(e.target.files[0]);
+    };
+
+
     const [formData, setFormData] = useState({
         fullname: '',
         email: '',
         password: '',
         position: ''
     });
+
+    const handleimageSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!image) {
+            setError('Please select an image to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('testImage', image);
+
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await axios.patch(`http://localhost:8080/api/v1/user/addImage`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.data.success) {
+                setError('');
+                window.location.reload()
+            } else {
+                setError(response.data.message || 'Failed to upload image');
+            }
+        } catch (err) {
+            console.error('Error uploading image:', err);
+            setError(err.message || 'Error uploading image');
+        }
+    };
 
     useEffect(() => {
         // Assuming you need to fetch and prefill data when the component mounts
@@ -129,6 +171,14 @@ const Settings = () => {
                 </button>
             </form>
             <ToastContainer />
+
+            <div>
+                <h2>Upload Image</h2>
+                <form onSubmit={handleimageSubmit}>
+                    <input type="file" onChange={handleFileChange} accept="image/*" />
+                    <button type="submit">Upload</button>
+                </form>
+            </div>
         </div>
     </>);
 };
