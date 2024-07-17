@@ -262,7 +262,7 @@ const ManageReim = () => {
                                         </div>
                                         <div className='reim-butts'>
                                             <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                                            <button onClick={() => rejectReimbursement(reimbursement._id)}>Reject Reimbursement</button>
+                                            <button onClick={() => rejectReimbursement(reimbursement._id)}>Change to Reject</button>
                                         </div>
                                     </div>
                                     {selectedReimbursementId === reimbursement._id && (
@@ -306,7 +306,7 @@ const ManageReim = () => {
                                         </div>
                                         <div className='reim-butts'>
                                             <button onClick={() => fetchItemsForReimbursement(reimbursement._id)}>Show Items</button>
-                                            <button onClick={() => acceptReimbursement(reimbursement._id)}>Accept Reimbursement</button>
+                                            <button onClick={() => acceptReimbursement(reimbursement._id)}>Change to Accept</button>
                                         </div>
                                     </div>
                                     {selectedReimbursementId === reimbursement._id && (
