@@ -294,7 +294,7 @@ const ManageLiq = () => {
                                         </div>
                                         <div className='reim-butts'>
                                             <button onClick={() => fetchItemsforLiq(liquidation._id)}>Show Items</button>
-                                            <button onClick={() => acceptLiq(liquidation._id)}>Accept Liquidation</button>
+                                            <button onClick={() => acceptLiq(liquidation._id)}>Change to Accept</button>
                                         </div>
                                     </div>
                                     {selectedLiquidationId === liquidation._id && (
