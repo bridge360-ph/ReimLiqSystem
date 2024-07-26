@@ -33,6 +33,7 @@ const AddImageModal = ({ isOpen, onClose, reimbursementId }) => {
             if (response.data.success) {
                 setError('');
                 onClose();
+                window.location.reload();
             } else {
                 setError(response.data.message || 'Failed to upload image');
             }

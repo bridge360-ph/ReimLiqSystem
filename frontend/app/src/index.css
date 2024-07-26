@@ -25,6 +25,9 @@
   margin-bottom: 2em;
 }
 
+.imgrec {
+  max-width: 500px;
+}
 
 .app-container {
   display: flex;

@@ -220,7 +220,7 @@ const ManageReim = () => {
                                                         <button className='modal-close' onClick={() => setShowReceipt(!showReceipt)}>
                                                             {showReceipt ? 'x' : 'Show Receipt'}
                                                         </button>
-                                                        <img src={`/assets/images/uploads/${reimbursement.receipt}`} alt='Receipt' />
+                                                        <img className='imgrec' src={`/assets/images/uploads/${reimbursement.receipt}`} alt='Receipt' />
                                                     </div>
 
                                                 </div>
